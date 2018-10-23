@@ -1,0 +1,93 @@
+<div class="middle-box loginscreen animated <?php if($this->errors || $this->form->getMessages()) echo 'shake' ?>">
+<?php  
+	$form = $this->form;
+
+	$form->setAttribute('action', $this->url('login/default', array('locale' => $this->currentLocale())))
+	->prepare();
+	$form->setAttribute('class', 'm-t');
+
+	$formLabel = $this->plugin('formLabel');
+
+	echo $this->form()->openTag($form);
+?>
+	<?php if($this->errors): ?>
+		<div class="alert alert-danger">
+			<?php 
+				foreach($this->errors as $error)
+				{
+					echo "<p><b>".$error."</b></p>";
+				} 
+			?>
+		</div>
+	<?php endif; ?>
+	<div class="form-group<?php if($form->get('login')->getMessages()) echo ' has-error' ?>">
+		<?php echo $this->formLabel($form->get('login')) ?>
+		<?php 
+			echo $this->formText
+			(
+				$form->get('login')
+				->setAttribute('class', 'form-control')
+			) 
+		?>
+		<?php echo $this->formElementErrors($form->get('login')) ?>
+	</div>
+	<div class="form-group<?php if($form->get('password')->getMessages()) echo ' has-error' ?>">
+		<?php echo $this->formLabel($form->get('password')) ?>
+		<?php 
+			echo $this->formPassword
+			(
+				$form->get('password')
+				->setAttribute('class', 'form-control')
+			) 
+		?>
+		<?php echo $this->formElementErrors($form->get('password')) ?>
+	</div>
+	<?php 
+		$form->get('captcha')->getCaptcha()->setImgUrl
+		(
+			$this->basePath($form->get('captcha')->getCaptcha()->getImgUrl())
+		); 
+	?>
+	<div class="captcha form-group<?php if($form->get('captcha')->getMessages()) echo ' has-error' ?>">
+		<p><?php echo $this->formLabel($form->get('captcha')) ?></p>
+		<?php 
+			echo $this->formCaptcha
+			(
+				$form->get('captcha')
+				->setAttribute('class', 'form-control')
+			) 
+		?>
+		<?php echo $this->formElementErrors($form->get('captcha')) ?>
+	</div>
+	<button type="submit" class="btn btn-primary block full-width m-b">
+		<span><?php echo $this->translate('Enter') ?></span>
+	</button>
+<?php echo $this->form()->closeTag($form); ?>
+<?php  
+	$this->headStyle()->appendStyle("
+		.captcha > img {
+			display:inline-block;
+			width:70%;
+			height:auto;
+			margin-right:1%;
+		}
+		.captcha > input[type=text] {
+			display:inline-block;
+			width:29%;
+		}
+		@media (max-width: 767px) {
+			.captcha > img {
+				display:block;
+				width:100%;
+				height:auto;
+				margin-right:0;
+				margin-bottom:2%;
+			}
+			.captcha > input[type=text] {
+				display:block;
+				width:100%;
+			}
+		}
+	");
+?>
+</div>

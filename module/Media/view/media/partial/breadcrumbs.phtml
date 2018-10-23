@@ -1,0 +1,18 @@
+<?php
+	// iterate through the pages
+	foreach ($this->pages as $key => $page):
+?>
+    <li>
+        <?php
+        // if this isn't the last page, add a link and the separator
+        if ($key < count($this->pages) - 1):
+            ?>
+            <a href="<?php echo $page->getHref(); ?>"><?php echo $page->getLabel(); ?></a>
+        <?php
+        // otherwise, just output the name
+        else:
+        ?>
+            <h1><?php echo $page->getLabel(); ?></h1>
+        <?php endif; ?>
+    </li>
+<?php endforeach; ?>

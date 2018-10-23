@@ -1,0 +1,146 @@
+<?php
+    $this->headTitle()
+        ->append($this->translate('Pages management'));
+    $this->headLink()
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.css'))
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.responsive.css'))
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.css'))
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.custom.css'));
+    $this->headStyle()
+        ->appendStyle(
+            "
+                .white--space-nowrap {
+                    white-space: nowrap;
+                }
+            "
+        );
+?>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Pages management') ?></h2>
+        <?php
+            echo $this->navigation('Zend\Navigation\Admin')
+                ->breadcrumbs()
+                ->setMinDepth(0)
+                ->setMaxDepth(4)
+                ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+    <div class="col-sm-4">
+        <div class="title-action">
+            <a class="btn btn-primary" href="<?php echo $this->url('admin/pages', array('locale' => $this->currentLocale(), 'action' => 'add')) ?>"><?php echo $this->translate('Add new page') ?></a>
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <?php if($this->pages): ?>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5><?php echo $this->translate('Add new page') ?></h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-down"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content table-responsive">
+                        <table class="table datatable">
+                            <thead>
+                                <th>#</th>
+                                <th><?php echo $this->translate('Title') ?></th>
+                                <th><?php echo $this->translate('Language') ?></th>
+                                <th><?php echo $this->translate('Info') ?></th>
+                                <th><?php echo $this->translate('Alternatives') ?></th>
+                                <th>Action</th>
+                            </thead>
+<tbody>
+    <?php $order = 1; foreach($this->pages as $page): ?>
+    <tr>
+        <td><?php echo $order ?></td>
+        <td><?php echo $page->title ?></td>
+        <td><?php echo isset($this->locales[$page->locale])? $this->locales[$page->locale] : '' ?></td>
+        <td>
+            <?php if($page->visible) : ?>
+                <span class="label label-success">
+                    <?php echo $this->translate('Visible'); ?>
+                </span>
+            <?php else : ?>
+                <span class="label label-danger">
+                    <?php echo $this->translate('Hidden'); ?>
+                </span>
+            <?php endif; ?>
+
+            <?php if($page->in_menu) : ?>
+                <span class="label label-info">
+                    <?php echo $this->translate('In menu'); ?>
+                </span>
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if($page->getAlternatives()): ?>
+                <?php foreach($page->getAlternatives() as $alternative): ?>
+                    <span class="label label-primary">
+                        <?php echo isset($this->locales[$alternative->locale])? $this->locales[$alternative->locale] : '' ?>
+                    </span>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <span class="label label-info">
+                    <?php echo $this->translate('Has no alternatives') ?>
+                </span>
+            <?php endif; ?>
+        </td>
+        <td>
+            <a target="_blank" class="btn btn-default btn-rounded btn-outline" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('View')) ?>" href="<?php echo $this->url('page/view', array('locale' => $page->locale, 'page' => $page->url)) ?>">
+                <i class="fa fa-external-link"></i>
+            </a>
+
+            <a class="btn btn-default btn-rounded btn-outline" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Edit')) ?>" href="<?php echo $this->url('admin/pages', array('locale' => $this->currentLocale(), 'action' => 'edit', 'page' => $page->url)) ?>">
+                <i class="fa fa-edit"></i>
+            </a>
+
+            <a class="btn btn-default btn-rounded btn-outline" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Delete')) ?>" href="<?php echo $this->url('admin/pages', array('locale' => $this->currentLocale(), 'action' => 'delete', 'page' => $page->url)) ?>">
+                <i class="fa fa-trash"></i>
+            </a>
+        </td>
+    </tr>
+    <?php $order++; endforeach; ?>
+</tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="middle-box text-center alert alert-info">
+            <h3 class="font-bold"><?php echo $this->translate('There are no pages to display') ?></h3>
+            <div class="error-desc">
+                <?php echo $this->translate('You can add new page by clicking link below') ?>
+                <br>
+                <a class="btn btn-info m-t" href="<?php echo $this->url('admin/pages', array('locale' => $this->currentLocale(), 'action' => 'add')) ?>"><?php echo $this->translate('Add new page') ?></a>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php
+    $this->inlineScript()
+        ->appendFile($this->basePath('dist/plugins/dataTables/jquery.dataTables.js'))
+        ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.js'))
+        ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.responsive.js'))
+        ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.js'))
+        ->appendScript(
+            "
+                $('.datatable').dataTable({
+                    responsive: true,
+                    language: {
+                        url: '".$this->url('application/default', ['locale' => $this->currentLocale(), 'controller' => 'jsPlugins', 'action' => 'datatablesI18n'])."'
+                    }
+                });
+
+                $('*[data-toggle=\"tooltip\"]').tooltip();
+            "
+        );
+?>

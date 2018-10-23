@@ -1,0 +1,115 @@
+<?php  
+	$this->headTitle()->append('Edit profile');
+?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2><?php echo $this->translate('Edit profile') ?></h2>
+        <?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Profile') ?></h5>
+				</div>
+				<div class="ibox-content">
+					<h3>
+						<strong><?php echo $this->identity()->name ?></strong>
+					</h3>
+					<p>
+						<b><?php echo $this->translate('Roles') ?>:</b>
+						<span><?php echo $this->identity()->roles ?></span>
+						<br>
+						<b><?php echo $this->translate('Login') ?>:</b>
+						<span>@<?php echo $this->identity()->login ?></span>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Profile settings') ?></h5>
+				</div>
+				<div class="ibox-content">
+					<?php  
+						$form = $this->form;
+
+						$form
+						->setAttribute('action', $this->url('profile/default', array('locale' => $this->currentLocale())))
+						->prepare();
+
+						$formLabel = $this->plugin('formLabel');
+
+						echo $this->form()->openTag($form);
+					?>
+						<div class="form-group<?php if($form->get('name')->getMessages()) echo ' has-error' ?>">
+							<?php  
+								echo $formLabel->openTag();
+									echo $this->translate($form->get('name')->getOption('label'));
+									echo '<span style="color:red;">*</span>';
+								echo $formLabel->closeTag(); 
+							?>
+							<?php 
+								echo $this->formText
+								(
+									$form->get('name')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('name')) ?>
+						</div>
+						<div class="alert alert-info">
+							<b>*<?php echo $this->translate('Do not change password if you want to keep old one') ?></b>
+						</div>
+						<div class="form-group<?php if($form->get('password')->getMessages()) echo ' has-error' ?>">
+							<?php  
+								echo $formLabel->openTag();
+									echo $this->translate($form->get('password')->getOption('label'));
+								echo $formLabel->closeTag(); 
+							?>
+							<?php 
+								echo $this->formPassword
+								(
+									$form->get('password')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('password')) ?>
+						</div>
+						<div class="form-group<?php if($form->get('password-check')->getMessages()) echo ' has-error' ?>">
+							<?php  
+								echo $formLabel->openTag();
+									echo $this->translate($form->get('password-check')->getOption('label'));
+								echo $formLabel->closeTag(); 
+							?>
+							<?php 
+								echo $this->formPassword
+								(
+									$form->get('password-check')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('password-check')) ?>
+						</div>
+						<button type="submit" class="btn btn-success">
+							<span><?php echo $this->translate('Save') ?></span>
+						</button>
+					<?php echo $this->form()->closeTag() ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

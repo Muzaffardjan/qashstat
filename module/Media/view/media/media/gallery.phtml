@@ -1,0 +1,100 @@
+<?php
+    echo $this->headTitle()
+        ->append($this->gallery->title)
+        ->append($this->translate('Gallery'));
+    echo $this->headLink()
+        ->appendStylesheet($this->basePath('assets/plugins/blueimp/css/blueimp-gallery.min.css'));
+    echo $this->headScript()
+        ->appendFile($this->basePath('assets/plugins/blueimp/js/jquery.blueimp-gallery.min.js'));
+
+    $mediaConfig = $this->getHelperPluginManager()->getServiceLocator()->get('config');
+    $mediaConfig = $mediaConfig['media'];
+?>
+
+<div class="page-view">
+    <div class="pull-right print_button">
+        <i title="" data-original-title="" class="ezo-print"></i>
+    </div>
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="<?php echo $this->url('home-locale', ['locale' => $this->currentLocale()]) ?>">
+                <?php echo $this->translate('Home') ?>
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->url('galleries/default', ['locale' => $this->currentLocale()]) ?>">
+                <?php echo $this->translate('Galleries') ?>
+            </a>
+        </li>
+        <li class="active"><?php echo $this->gallery->title ?></li>
+    </ol>
+
+    <div class="page-content">
+        <h3>
+            <?php echo $this->gallery->title; ?>
+        </h3>
+
+        <div class="row" id="links">
+            <?php $i=1; foreach ($this->images as $image) : ?>
+                <?php $imgPath = $mediaConfig['public_path'] . "collection_" . $image->name . "/" . $image->src; ?>
+
+                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <a class="img-item img-thumbnail" href="<?php echo $this->basePath($imgPath); ?>" target="_blank" <?php if(isset($this->descriptions[$image->id])) echo 'title="'.$this->descriptions[$image->id]->title.'"' ?>>
+                        <img class="img-responsive center-block" src="<?php echo $this->basePath($imgPath); ?>">
+
+                        <?php if (isset($this->descriptions[$image->id])): ?>
+                            <h4 style="color:#000;margin-top: 5px;">
+                                <?php echo $this->descriptions[$image->id]->title ?>
+                            </h4>
+                        <?php endif ?>
+                    </a>
+                </div>
+
+                <?php if ($i%4 == 0): ?>
+                <div class="clearfix"></div>
+                <?php endif ?>
+            <?php $i++; endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<div id="blueimp-gallery" style="margin-top:0;z-index:1500;position:fixed;width: 100%;height: 100%;" class="blueimp-gallery blueimp-gallery-controls">
+    <div class="slides"></div>
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+</div>
+
+<script>
+    document.getElementById('links').onclick = function (event) {
+        event = event || window.event;
+        var target  = event.target || event.srcElement,
+            link    = target.src ? target.parentNode : target,
+            options = {index: link, event: event, thumbnailIndicators: true},
+            links   = [];
+
+        if(!$(target).is('img')) {
+            return;
+        }
+
+        $('#links').find('.img-item').each(function(){
+            links.push(this);
+        });
+
+        blueimp.Gallery(links, options);
+    };
+
+    $(window).load(function(){
+        var links = [], options = {thumbnailIndicators: true};
+
+        $('#links').find('.img-item').each(function(){
+            links.push(this);
+        });
+
+        blueimp.Gallery(links, options);
+    });
+</script>

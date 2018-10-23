@@ -1,0 +1,51 @@
+<?php $container = $this->navigation()->breadcrumbs(); ?>
+
+<ol class="breadcrumb">
+	<li>
+        <a href="<?php
+            echo $this->url(
+                'admin/default',
+                array(
+                    'locale' => $this->currentLocale()
+                )
+            );
+        ?>">
+            <?php echo $this->translate("Dashboard") ?>
+        </a>
+    </li>
+    <?php foreach($this->pages as $page): ?>
+    	<?php
+    		if($page->navigationOnly) {
+    			continue;
+    		}
+
+    		if($page instanceof \Zend\Navigation\Page\Mvc) {
+    			$page->setParams(
+                    array_merge(
+                        $page->getParams(),
+                        array(
+                            'locale' => $this->currentLocale()
+                        )
+                    )
+                );
+    		}
+    	?>
+		<?php if(!$page->isActive()): ?>
+            <li>
+                <a href="<?php echo $page->getHref() ?>">
+                    <?php echo $this->translate($page->getLabel()) ?>
+                </a>
+            </li>
+        <?php else: ?>
+            <li class="active">
+                <?php if($container->getLinkLast()): ?>
+                	<a href="<?php echo $page->getHref() ?>">
+                <?php endif ?>
+                	<b><?php echo $this->translate($page->getLabel()) ?></b>
+                <?php if($container->getLinkLast()): ?>
+                	</a>
+               	<?php endif ?>
+            </li>
+        <?php endif ?>
+    <?php endforeach; ?>
+</ol>

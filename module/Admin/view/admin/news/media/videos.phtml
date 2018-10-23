@@ -1,0 +1,88 @@
+<?php echo $this->headTitle()->append($this->translate('Videos'))->append($this->translate('Media')) ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-8">
+		<h2><?php echo $this->translate('Videos') ?></h2>
+		<?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+	</div>
+	<div class="col-sm-4">
+		<div class="title-action">
+            <a class="btn btn-primary" href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'addVideo')) ?>">
+            	<i class="fa fa-plus"></i>
+            	<?php echo $this->translate('Add video'); ?>
+            </a>
+        </div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Videos list'); ?></h5>
+					<div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+				</div>
+				<div class="ibox-content">
+					<table class="table datatable">
+						<thead>
+							<th style="width: 40px;">#</th>
+							<th><?php echo $this->translate('Video') ?></th>
+							<th style="width: 150px;"><?php echo $this->translate('Added time'); ?></th>
+							<th style="width: 120px;"></th>
+						</thead>
+						<tbody>
+							<?php $i=1; foreach ($this->videos as $video) : ?>								
+							<tr>
+								<td><?php echo $i++; ?></td>
+								<td><?php echo $this->escapeHtml($video->src); ?></td>
+								<td class="text-center"><?php echo implode('<br>', explode(' ', date('d-m-Y H:i:s', $video->time))); ?></td>
+								<td>
+									<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'editVideo', 'collection' => $video->id)); ?>" class="btn btn-default btn-outline btn-rounded" data-toggle='tooltip' data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Edit')); ?>">
+										<i class="fa fa-edit"></i>
+									</a>
+									<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'deleteVideo', 'collection' => $video->id)); ?>" class="btn btn-default btn-outline btn-rounded" data-toggle='tooltip' data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Delete')); ?>">
+										<i class="fa fa-trash"></i>
+									</a>
+								</td>
+							</tr>
+							<?php endforeach; ?>							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php 
+	$this->headLink()
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.bootstrap.css'))
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.responsive.css'))
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.tableTools.min.css'))
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.custom.css'));
+
+	$this->inlineScript()
+	->appendFile($this->basePath('js/plugins/dataTables/jquery.dataTables.js'))
+	->appendFile($this->basePath('js/plugins/dataTables/dataTables.bootstrap.js'))
+	->appendFile($this->basePath('js/plugins/dataTables/dataTables.responsive.js'))
+	->appendFile($this->basePath('js/plugins/dataTables/dataTables.tableTools.min.js'))
+	->appendScript("
+		$('.datatable').dataTable({
+			responsive: true,
+			\"language\": {
+                \"url\": \"".$this->url('application/default', array('locale' => $this->currentLocale(), 'controller' => 'jsPlugins', 'action' => 'datatablesI18n'))."\"
+            }
+		});
+		$('*[data-toggle=\"tooltip\"]').tooltip();
+	");
+?>

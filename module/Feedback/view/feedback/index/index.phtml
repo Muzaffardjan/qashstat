@@ -1,0 +1,107 @@
+<?php
+    echo $this->headStyle()
+        ->appendStyle("
+            .form-control {
+                border-radius: 0;
+            }
+        ");
+?>
+<?php if ($this->error): ?>
+<p class="error">
+    There were one or more isues with your submission. Please correct them as 
+    indicated below.
+</p>
+<?php endif ?>
+
+<div class="page-view">
+    <div class="page-content">
+        <h3>
+            <?php echo $this->translate('Contact Us'); ?>
+        </h3>
+
+        <div id="google-map" style="border: 1px solid red; height: 350px; margin-bottom: 20px;"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3 style="font-size: 20px;"><?php echo $this->translate('Contact Info') ?></h3>
+
+                <?php echo $this->block('contact_info') ?>
+            </div>
+
+            <div class="col-md-12" style="margin-top: 30px;">
+                <?php if(!$this->success): ?>
+                    <?php
+                    /**
+                     * @var \Feedback\Form\Feedback $form
+                     */
+                        $form = $this->form;
+                        $form->prepare();
+                        $form->setAttribute(
+                            'action', 
+                            $this->url(
+                                'feedback/default', 
+                                ['locale' => $this->currentLocale()]
+                            )
+                        );
+                        $form->setAttribute('method', 'post');
+                        $form->setAttribute('class', 'contact-form');
+
+                        echo $this->form()->openTag($form);
+                    ?>
+                        <div class="form-group">
+                            <?php echo $this->formLabel($form->get('name')); ?>
+                            <?php
+                                echo $this->formElement($form->get('name')->setAttribute('placeholder', str_replace('"', '', $this->translate('Full name'))));
+                                echo $this->formElementErrors($form->get('name'));
+                            ?>
+                        </div>
+
+                        <div class="form-group">
+                            <?php echo $this->formLabel($form->get('phone')); ?>
+                            <?php
+                                echo $this->formElement($form->get('phone')->setAttribute('placeholder', str_replace('"', '', $this->translate('Phone'))));
+                                echo $this->formElementErrors($form->get('phone'));
+                            ?>
+                        </div>
+
+                        <div class="form-group">
+                            <?php echo $this->formLabel($form->get('email')); ?>
+                            <?php
+                                echo $this->formElement($form->get('email')->setAttribute('placeholder', str_replace('"', '', $this->translate('Email'))));
+                                echo $this->formElementErrors($form->get('email'));
+                            ?>
+                        </div>
+
+                        <div class="form-group">
+                            <?php echo $this->formLabel($form->get('subject')); ?>
+                            <?php
+                                echo $this->formElement($form->get('subject')->setAttribute('placeholder', str_replace('"', '', $this->translate('Subject'))));
+                                echo $this->formElementErrors($form->get('subject'));
+                            ?>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message"><?php echo $this->translate('Message'); ?></label>
+                            <?php
+                                echo $this->formTextarea(
+                                    $form->get('text')
+                                        ->setAttribute('style', 'height:150px;')
+                                );
+                                echo $this->formElementErrors($form->get('text'));
+                            ?>
+                        </div>
+
+                        <button type="submit" class="btn btn-default" id="contact_form_submit" name="contact_submit">
+                            <i class="ezo-paper-plane"></i>
+                            <?php echo $this->translate('Send'); ?>
+                        </button>
+                    <?php echo $this->form()->closeTag() ?>
+                <?php else: ?>
+                    <div class="alert alert-success">
+                        <b><?php echo $this->translate('Your message was sent successfully'); ?></b>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<?php  
+    use Zend\Mvc\Controller\Plugin\FlashMessenger as FM;
+    
+    $messages = array(
+        'info'      => $this->flashMessenger(FM::NAMESPACE_INFO),
+        'danger'    => $this->flashMessenger(FM::NAMESPACE_ERROR),
+        'success'   => $this->flashMessenger(FM::NAMESPACE_SUCCESS),
+        'warning'   => $this->flashMessenger(FM::NAMESPACE_WARNING),
+    );
+
+    foreach($messages as $state => $strings) {
+        foreach($strings as $key => $message) {
+            $messages[$state][$key] = $this->translate($message);
+        }
+    }
+
+    $messages['warning'] = array_merge(
+        $messages['warning'],
+        $this->flashMessenger(FM::NAMESPACE_DEFAULT)
+    );
+?>
+<?php if (count($messages, true) > 4): ?>
+    <div style="position: fixed;width: 30%;right:0;top:0;z-index: 2000;padding: 20px;">
+        <?php foreach ($messages as $state => $strings): if(!$strings) continue; ?>
+            <div class="text-center alert alert-<?php echo $state ?> alert-dismissible" style="position: relative;">
+                <button type="button" class="close" style="position: absolute;top: 5px;right: 10px;" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+
+                <h1 style="margin: 0; opacity: 0.5;">
+                    <?php if ($state == 'info'): ?>
+                        <i class="fa fa-fa-info-circle"></i>
+                    <?php elseif($state == 'success'): ?>
+                        <i class="fa fa-check"></i>
+                    <?php else: ?>
+                        <i class="fa fa-exclamation-circle"></i>
+                    <?php endif ?>
+                </h1>
+
+                <ul style="list-style: none; padding: 0;">
+                    <?php foreach ($strings as $message): ?>
+                        <li><b><?php echo $message ?></b></li>
+                    <?php endforeach ?>
+                </ul>
+            </div>
+        <?php endforeach ?>
+    </div>
+<?php endif ?>

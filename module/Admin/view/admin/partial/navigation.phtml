@@ -1,0 +1,54 @@
+<?php foreach($this->container as $page): ?>
+	<?php 
+		if($page->breadcrumbsOnly)
+		{
+			continue; 
+		}
+
+		if($page instanceof \Zend\Navigation\Page\Mvc)
+		{
+			$page->setParams(array_merge($page->getParams(), array('locale' => $this->currentLocale())));
+		}
+	?>	
+
+	<?php if($this->hasUl): ?>
+		<ul class="nav collapse <?php echo $this->ulClass ?>">
+	<?php endif; ?>
+		<?php if($page->hasPages() && !$page->single): ?>
+			<li <?php if($page->isAcvite()) echo 'class="active"' ?>>
+				<a href="#" >
+					<?php if($page->icon): ?>
+						<i class="<?php echo $page->icon ?>"></i>
+					<?php endif; ?>
+					<span class="nav-label"><?php echo $this->translate($page->getLabel()) ?></span>
+					<span class="fa arrow"></span>
+				</a>
+				<?php 
+					echo $this->partial
+					(
+						'admin/partial/navigation',
+						array(
+							'container'	=> $page,
+							'hasUl' 	=> true,
+							'ulClass' 	=> ($this->ulClass)? 'nav-third-level': 'nav-second-level'
+						)
+					) 
+				?>
+			</li>
+		<?php else: ?>
+			<li <?php if($page->isActive()) echo 'class="active"' ?>>
+				<a href="<?php echo $page->getHref() ?>" >
+					<?php if($page->icon): ?>
+						<i class="<?php echo $page->icon ?>"></i>
+					<?php endif; ?>
+					<span class="nav-label"><?php echo $this->translate($page->getLabel()) ?></span>
+					<?php if($page->badge): ?>
+						<span class="label <?php echo ($page->badgeType)? $page->badgeType: 'label-warning' ?> pull-right"><?php echo $this->translate($page->badge) ?></span>
+					<?php endif; ?>
+				</a>
+			</li>
+		<?php endif; ?>
+	<?php if($this->hasUl): ?>
+		</ul>
+	<?php endif; ?>
+<?php endforeach; ?>

@@ -1,0 +1,119 @@
+<?php
+    $this->headTitle()->append($this->news->title)->append($this->category->title);
+    $this->headMeta()
+        ->appendName('description', str_replace('"', '', $this->news->description))
+        ->appendName('twitter:card', 'summary_large_image')
+        ->appendName('twitter:title', str_replace('"', '', $this->news->title))
+        ->appendName('twitter:description', str_replace('"', '', $this->news->description))
+        ->appendProperty('og:type', 'article')
+        ->appendProperty('og:title', str_replace('"', '', $this->news->title))
+        ->appendProperty('og:description', str_replace('"', '', $this->news->description))
+        ->appendProperty('og:url', $this->serverUrl(true))
+        ->appendProperty('og:site_name', str_replace('"', '', $this->translate('Company name')));
+    if ($this->news->image) {
+        $imageSrc = $this->serverUrl() . $this->basePath($this->news->image);
+        $this->headMeta()
+            ->appendProperty('og:image', $imageSrc)
+            ->appendName('twitter:image', $imageSrc);
+    }
+?>
+<div class="news-view">
+    <div class="pull-right print_button">
+        <i title="" data-original-title="" class="ezo-print"></i>
+        <i title="" data-original-title="" class="ezo-file-word" id="save-as-word"></i>
+    </div>
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="<?php
+                echo $this->url(
+                    'home-locale',
+                    ['locale' => $this->currentLocale()]
+                );
+            ?>">
+                <?php echo $this->translate('Home') ?>
+            </a>
+        </li>
+        <li>
+            <a href="<?php
+                echo $this->url(
+                    'blog/default',
+                    ['locale' => $this->currentLocale()]
+                );
+            ?>">
+                <?php echo $this->translate('Blog') ?>
+            </a>
+        </li>
+        <li class="active"><?php echo $this->category->title ?></li>
+    </ol>
+
+    <div class="news-content" id="news-content">
+        <h4>
+            <?php echo $this->news->title; ?>
+        </h4>
+
+        <?php echo $this->news->body; ?>
+    </div>
+
+    <div class="share">
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $this->serverUrl(true); ?>">
+                <i class="ezo-facebook"></i>
+            </a>
+        </li>
+        <li>
+            <a href="https://twitter.com/home?status=<?php echo $this->serverUrl(true); ?>">
+                <i class="ezo-twitter"></i>
+            </a>
+        </li>
+        <li>
+            <a href="https://plus.google.com/share?url=<?php echo $this->serverUrl(true); ?>">
+                <i class="ezo-gplus"></i>
+            </a>
+        </li>
+
+        <li>
+            <div style="font-size: 18px; color: #009688; padding-top: 7px; font-family: "Segoe UI", "SegoeUISemilight", Calibri;">
+                <span class="ezo-clock"></span>
+                <?php echo date('d-m-Y', $this->news->added) ?>
+            </div>
+        </li>
+    </div>
+</div>
+
+<?php
+    $this->inlineScript()
+        ->prependFile($this->basePath('js/word-export/jquery.wordexport.js'))
+        ->prependFile($this->basePath('js/word-export/FileSaver_2014.js'))
+        ->prependFile($this->basePath('dist/plugins/jquery-print/jquery.print.js'))
+        ->appendScript(
+            "
+                $(window).load(function(){
+                    $('.ezo-print').tooltip({
+                        placement: 'left',
+                        animation: true,
+                        title: '".$this->translate('Print')."'
+                    });
+
+                    $('#print-a').click(function(){
+                        $('#post').print({
+                            noPrintSelector: '.no-print',
+                            //title: '".str_replace("'", "", $this->translate('Project name'))."',
+                            prepend: '<h3>".str_replace("'", "", $this->translate('Project name'))."</h3>', 
+                            append: '<a href=\"".$this->serverUrl(true)."\">".$this->serverUrl(true)."</a>',
+                        });
+                    });
+                });
+
+                (function($, window, document) {
+                    'use strict';
+
+                    $(document).ready(function() {
+                        $('#save-as-word').on('click', function() {
+                            $('#news-content').wordExport('" . $this->category->title . "');
+                        });
+                    });
+                })(jQuery, window, document);
+            "
+        );
+?>

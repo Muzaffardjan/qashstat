@@ -1,0 +1,97 @@
+<?php
+    echo $this->headTitle()
+        ->append($this->translate('Users management'));
+    echo $this->headLink()
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.css'))
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.responsive.css'))
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.css'))
+        ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.custom.css'));
+?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2><?php echo $this->translate('Users management') ?></h2>
+        <?php
+            /*$this->plugin('navigation')->setContainer($this->navigation()->getContainer());*/
+
+            echo $this->navigation('Zend\Navigation\Admin')
+                      ->breadcrumbs()
+                      ->setMinDepth(0)
+                      ->setMaxDepth(4)
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+    <div class="col-sm-8">
+        <div class="title-action">
+            <a class="btn btn-primary" href="<?php echo $this->url('admin/users', array('locale' => $this->currentLocale(), 'action' => 'register')) ?>"><?php echo $this->translate('Add new user') ?></a>
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5><?php echo $this->translate('Registered users') ?></h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table datatable">
+                        <thead>
+                            <th>#</th>
+                            <th><?php echo $this->translate('Login') ?></th>
+                            <th><?php echo $this->translate('Name') ?></th>
+                            <th><?php echo $this->translate('Description') ?></th>
+                            <th><?php echo $this->translate('Roles') ?></th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            <?php $order = 1; foreach($this->users as $user): ?>
+                                <tr>
+                                    <td><?php echo $order ?></td>
+                                    <td><?php echo $user->login ?></td>
+                                    <td><?php echo $user->name ?></td>
+                                    <td><?php echo $user->description ?></td>
+                                    <td><?php echo $user->roles ?></td>
+                                    <td>
+                                        <?php if($user->roles !== $this->config['super_user']): ?>
+                                            <a class="btn btn-default btn-outline btn-rounded" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Edit')) ?>" href="<?php echo $this->url('admin/users-as-param', array('locale' => $this->currentLocale(), 'action' => 'edit', 'user' => $user->login)) ?>">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a class="btn btn-default btn-outline btn-rounded" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Delete')) ?>" href="<?php echo $this->url('admin/users-as-param', array('locale' => $this->currentLocale(), 'action' => 'delete', 'user' => $user->login)) ?>">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="label label-info"><?php echo $this->translate('Only Superuser he/she/itself can edit own profile') ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php $order++; endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php 
+    
+
+    $this->inlineScript()
+    ->appendFile($this->basePath('dist/plugins/dataTables/jquery.dataTables.js'))
+    ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.js'))
+    ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.responsive.js'))
+    ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.js'))
+    ->appendScript("
+        $('.datatable').dataTable({
+            responsive: true,
+            language: {
+                url: '".$this->url('application/default', array('locale' => $this->currentLocale(), 'controller' => 'jsPlugins', 'action' => 'datatablesI18n'))."'
+            }
+        });
+        $('*[data-toggle=\"tooltip\"]').tooltip();
+    ");
+?>

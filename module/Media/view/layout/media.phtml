@@ -1,0 +1,827 @@
+<?php 
+    echo $this->doctype();
+    $htmlLocale = substr($this->currentLocale(), 0, 2);
+    $config = $this->getHelperPluginManager()->getServiceLocator()->get('config');
+    $locales = $config['translator']['locales'];
+?>
+<!--[if lt IE 7]>      
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="<?php echo $htmlLocale ?>> 
+<![endif]-->
+<!--[if IE 7]>         
+<html class="no-js lt-ie9 lt-ie8" lang="<?php echo $htmlLocale ?>> 
+<![endif]-->
+<!--[if IE 8]>         
+<html class="no-js lt-ie9" lang="<?php echo $htmlLocale ?>> 
+<![endif]-->
+<!--[if gt IE 8]><!--> 
+<html class="no-js" lang="<?php echo $htmlLocale ?>"> 
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <base href="<?php echo $this->basePath('/') ?>">
+    <?php
+        echo $this->headTitle($this->translate('Project name'))->setSeparator(' - ')->setAutoEscape(false);
+        echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+            ->prependStylesheet($this->basePath('assets/css/theme/base.css'))
+            ->prependStylesheet($this->basePath('assets/css/theme/dark.css'))
+            ->prependStylesheet($this->basePath('assets/css/global.css'))
+            ->prependStylesheet($this->basePath('assets/plugins/et-line/et-line.css'))
+            ->prependStylesheet($this->basePath('assets/plugins/font-awesome/css/font-awesome.min.css'))
+            ->prependStylesheet($this->basePath('assets/plugins/bootstrap/css/bootstrap.min.css'))
+            ->prependStylesheet('https://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic')
+            ->prependStylesheet('https://fonts.googleapis.com/css?family=Roboto:100,400,700,500,300,300italic');
+        echo $this->headScript()
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.video.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.slideanims.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.parallax.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.navigation.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.migration.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.layeranimation.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.kenburn.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.carousel.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/extensions/revolution.extension.actions.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/jquery.themepunch.revolution.min.js'))
+            ->prependFile($this->basePath('assets/plugins/rev-slider/js/jquery.themepunch.tools.min.js'))
+            ->prependFile($this->basePath('assets/plugins/jquery.min.js')); 
+    ?>
+</head>
+<body>
+    <div class="wrapper animsition wrapper-top-space">
+        <!--========== HEADER ==========-->
+        <header class="header navbar-fixed-top rev-slider-offset header-sticky">
+            <!-- Topbar Classic -->
+            <div class="topbar-c theme-toggle-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-inline topbar-c-contacts">
+                                <li class="topbar-c-contacts-item">
+                                    <i class="topbar-c-contacts-icon icon-phone"></i>
+                                    <?php echo $this->block('top_phone'); ?>
+                                </li>
+                                <li class="topbar-c-contacts-item">
+                                    <i class="topbar-c-contacts-icon icon-envelope"></i>
+                                    <a class="topbar-c-contacts-link" href="#"><?php echo $this->block('top_email_address'); ?></a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <ul class="list-inline topbar-c-actions">
+                                <li class="topbar-c-actions-item">
+                                    <a class="topbar-c-actions-link" href="javascript:void(0);">
+                                        <?php echo $this->translate('National symbols'); ?>
+                                    </a>
+                                </li>
+                                <li class="topbar-c-actions-item">
+                                    <a class="topbar-c-actions-link" href="<?php echo $this->url('sitemap', array('locale' => $this->currentLocale())) ?>">
+                                        <i class="fa fa-sitemap"></i> <?php echo $this->translate('Sitemap'); ?>
+                                    </a>
+                                </li>
+                                <li class="topbar-c-actions-item-divider">|</li>
+                                <li class="topbar-c-actions-item dropdown">
+                                    <a 
+                                        class="topbar-c-actions-link-border radius-50 dropdown-toggle" 
+                                        href="javascript:void(0);" 
+                                        data-toggle="dropdown" 
+                                        aria-haspopup="true" 
+                                        aria-expanded="true" 
+                                        id="dropdown_lang">
+                                        <?php echo isset($locales[$this->currentLocale()])? $locales[$this->currentLocale()]: ''; ?>
+                                        <i class="caret"></i>
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="dropdown_lang">
+                                        <?php foreach ($locales as $iso => $title): if($this->currentLocale() == $iso) continue; ?>
+                                            <li>
+                                                <a href="<?php echo $this->url('home-locale', array('locale' => $iso)); ?>">
+                                                    <?php echo $title; ?>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!--// End row -->
+                </div>
+            </div>
+            <!-- End Topbar Classic -->
+
+            <!-- Navbar -->
+            <nav class="navbar mega-menu" role="navigation">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="menu-container">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="toggle-icon"></span>
+                        </button>
+
+                        <!-- Navbar Actions -->
+                        <div class="navbar-actions">
+                            <!-- Search Classic -->
+                            <div class="navbar-actions-shrink search-classic">
+                                <div class="search-classic-btn">
+                                    <i class="search-classic-btn-default fa fa-search"></i>
+                                    <i class="search-classic-btn-active fa fa-times"></i>
+                                </div>
+
+                                <div class="search-classic-field">
+                                    <div class="input-group">
+                                        <!-- form role="search" method="get" action="<?php echo $this->url('search', array('locale' => $this->currentLocale())) ?>" -->
+                                            <input name="search" id="search" type="text" class="form-control search-classic-input" placeholder="<?php echo str_replace('"', '', $this->translate('Search')) ?>">
+                                            <span class="input-group-btn">
+                                                <button class="btn-base-bg btn-base-sm" type="submit"><?php echo $this->translate('Search'); ?></button>
+                                            </span>
+                                        <!-- /form -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Search Classic -->
+                        </div>
+                        <!-- End Navbar Actions -->
+
+                        <!-- Logo -->
+                        <div class="navbar-logo">
+                            <a class="navbar-logo-wrap" href="<?php echo $this->url('home-locale', array('locale' => $this->currentLocale())); ?>">
+                                <img class="navbar-logo-img" src="<?php echo $this->basePath('assets/img/logo-default.png'); ?>" alt="Ark">
+                            </a>
+                        </div>
+                        <!-- End Logo -->
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse nav-collapse">
+                        <div class="menu-container">
+                            <ul class="nav navbar-nav">
+                                <?php echo $this->navigation('Menu\Positions\Statictop\\'.$this->currentLocale())->menu()->setPartial('application/front/partial/top-menu'); ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- End Navbar Collapse -->
+                </div>
+                <!--// End Container-->
+            </nav>
+            <!-- Navbar -->
+        </header>
+        <!--========== END HEADER ==========-->
+
+        <!--========== FORM MODAL ==========-->
+        <div class="form-modal">
+            <div class="form-modal-wrap">
+                <div class="form-modal-container">
+                    <!-- Login Form -->
+                    <div id="form-modal-login">
+                        <div class="form-modal-heading">
+                            <h2 class="form-modal-title">Login</h2>
+                            <p>Use Facebook or an email</p>
+                        </div>
+
+                        <div class="clearfix margin-b-20">
+                            <div class="form-modal-connect">
+                                <button type="button" class="btn-fb-bg btn-base-animate-to-top btn-base-sm btn-block radius-3">
+                                    Facebook
+                                    <span class="btn-base-element-sm radius-3">
+                                        <i class="btn-base-element-icon fa fa-facebook"></i>
+                                    </span>
+                                </button>
+                            </div>
+
+                            <div class="form-modal-divider">
+                                <span class="form-modal-divider-text">or</span>
+                            </div>
+
+                            <form class="form-modal-login-form">
+                                <fieldset>
+                                    <input class="form-control form-modal-input radius-3 margin-b-10" id="signin-email" type="email" placeholder="Email Address">
+                                </fieldset>
+
+                                <fieldset class="form-modal-input-group">
+                                    <input class="form-control form-modal-input form-modal-input-form radius-3 margin-b-10" id="signin-password" type="text" placeholder="Password">
+                                    <a class="form-modal-hide-password" href="javascript:void(0);">Hide</a>
+                                </fieldset>
+
+                                <fieldset>
+                                    <button type="submit">
+                                        Login
+                                    </button>
+                                </fieldset>
+                            </form>
+                        </div>
+
+                        <p class="form-modal-back-btn-message">
+                            Forgot your password?
+                            <a class="form-modal-back-btn" href="javascript:void(0);">Reset</a>
+                        </p>
+
+                        <div class="form-modal-switcher text-center">
+                            <div class="form-modal-switcher-item form-modal-back-btn-message">
+                                Don't have account?
+                                <a class="form-modal-back-btn-message-link" href="javascript:void(0);">Signup</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Login Form -->
+
+                    <!-- Signup -->
+                    <div id="form-modal-signup">
+                        <div class="form-modal-heading">
+                            <h2 class="form-modal-title">Signup for free</h2>
+                            <p class="form-modal-paragraph">Use Facebook or an email</p>
+                        </div>
+
+                        <div class="clearfix margin-b-20">
+                            <div class="form-modal-connect">
+                                <button type="button" class="btn-fb-bg btn-base-animate-to-top btn-base-sm btn-block radius-3">Facebook
+                                    <span class="btn-base-element-sm radius-3"><i class="btn-base-element-icon fa fa-facebook"></i></span>
+                                </button>
+                            </div>
+
+                            <div class="form-modal-divider">
+                                <span class="form-modal-divider-text">or</span>
+                            </div>
+
+                            <form class="form-modal-login-form margin-b-20">
+                                <fieldset>
+                                    <input class="form-control form-modal-input radius-3 margin-b-10" id="signup-username" type="text" placeholder="Username">
+                                </fieldset>
+
+                                <fieldset>
+                                    <input class="form-control form-modal-input radius-3 margin-b-10" id="signup-email" type="email" placeholder="Email Address">
+                                </fieldset>
+
+                                <fieldset class="form-modal-input-group">
+                                    <input class="form-control form-modal-input form-modal-input-form radius-3 margin-b-10" id="signup-password" type="text" placeholder="Password">
+                                    <a class="form-modal-hide-password" href="javascript:void(0);">Hide</a>
+                                </fieldset>
+
+                                <fieldset>
+                                    <button type="submit" class="btn-base-bg btn-base-sm btn-block radius-3">Create Account</button>
+                                </fieldset>
+                            </form>
+
+                            <div class="form-modal-back-btn-message">
+                                By signing up you agree to the
+                                <a href="#">Terms &amp; Conditions</a>
+                                and
+                                <a href="#">Privacy &amp; Policy</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Signup -->
+
+                    <!-- Reset Password -->
+                    <div id="form-modal-reset-password">
+                        <div class="form-modal-heading">
+                            <h2 class="form-modal-title">Reset password</h2>
+                            <p class="form-modal-paragraph">Enter email to reset password</p>
+                        </div>
+
+                        <div class="clearfix margin-b-20">
+                            <form class="form-modal-reset-form">
+                                <fieldset>
+                                    <input class="form-control form-modal-input radius-3 margin-b-10" id="reset-email" type="email" placeholder="Email Address">
+                                </fieldset>
+
+                                <fieldset class="margin-b-20">
+                                    <button type="submit" class="btn-base-bg btn-base-sm btn-block radius-3">Reset</button>
+                                </fieldset>
+
+                                <div class="form-modal-back-btn-message">
+                                    Already have account?
+                                    <a class="form-modal-back-btn form-modal-back-btn-message-link" href="javascript:void(0);">Login</a>
+                                </div>
+
+                                <div class="form-modal-switcher">
+                                    <div class="form-modal-switcher-item form-modal-back-btn-message">
+                                        Don't have account?
+                                        <a class="form-modal-back-btn-message-link" href="javascript:void(0);">Signup</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- End Reset Password -->
+                </div>
+            </div>
+
+            <a href="javascript:void(0);" class="form-modal-close-form">&times;</a>
+        </div>
+        <!--========== END FORM MODAL ==========-->
+
+        <!--========== REVOLUTION SLIDER ==========-->
+        <div class="rev_slider_wrapper fullwidthbanner-container" style="margin: 0 auto; background-color: #f7f8fa; padding: 0; color: #fff; margin-top: 0; margin-bottom: 0;">
+            <div id="rev-slider9" class="rev_slider fullwidthabanner" style="display: none;">
+                <ul>
+                    <!-- Slide -->
+                    <li data-transition="fade" data-slotamount="default" data-easein="Power3.easeInOut" data-easeout="Power3.easeInOut" data-masterspeed="1500" data-thumb="<?php echo $this->basePath('assets/img/1920x1080/07.jpg'); ?>" data-rotate="0" data-saveperformance="off" data-title="Multifanctional Magic">
+                        <!-- Main Image -->
+                        <img src="<?php echo $this->basePath('assets/img/1920x1080/07.jpg'); ?>" alt="" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" data-no-retina>
+                        <!-- Layers -->
+                        <div class="tp-caption tp-resizeme color-white"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['-110','-110','-110','-70']"
+                            data-fontsize="['35','35','35','25']"
+                            data-lineheight="['50','50','50','40']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="auto:auto;s:1000;e:Power3.easeInOut;"
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                            data-mask_out="x:0;y:0;s:inherit;e:inherit;"
+                            data-start="1000"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            data-lasttriggerstate="reset"
+                            style="z-index: 8; font-style: italic; white-space: nowrap;">
+                            You can make a difference without coding.
+                        </div>
+                        <div class="tp-caption tp-resizeme color-white"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                            data-fontsize="['110','100','90','50']"
+                            data-lineheight="['130','120','110','70']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="auto:auto;s:1000;e:Power3.easeInOut;"
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                            data-mask_out="x:0;y:0;s:inherit;e:inherit;"
+                            data-start="1000"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            style="z-index: 7; white-space: nowrap;">
+                            Multifanctional Magic
+                        </div>
+                        <div class="tp-caption rev-btn"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['170','160','160','110']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Linear.easeNone;"
+                            data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);cursor:pointer;"
+                            data-transform_in="y:50px;opacity:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="opacity:0;s:2;e:Linear.easeNone;s:2;e:Linear.easeNone;"
+                            data-actions='[{"event":"click","action":"scrollbelow","offset":"20px"}]'
+                            data-start="1500"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            data-responsive="off"
+                            data-elementdelay="0.1"
+                            style="z-index: 11;">
+                            <button type="button" class="btn-white-bg btn-base-md radius-3">Get Started</button>
+                        </div>
+                    </li>
+                    <!-- End Slide -->
+
+                    <!-- Slide -->
+                    <li data-transition="fade" data-slotamount="default" data-easein="Power3.easeInOut" data-easeout="Power3.easeInOut" data-masterspeed="1500" data-thumb="<?php echo $this->basePath('assets/img/1920x1080/06.jpg'); ?>" data-rotate="0" data-saveperformance="off" data-title="Ark - Big Possiblities">
+                        <!-- Main Image -->
+                        <img src="<?php echo $this->basePath('assets/img/1920x1080/06.jpg'); ?>" alt="" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-no-retina>
+                        <!-- Layers -->
+                        <div class="tp-caption tp-resizeme color-white"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['-110','-110','-110','-70']"
+                            data-fontsize="['35','35','35','25']"
+                            data-lineheight="['50','50','50','40']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="auto:auto;s:1000;e:Power3.easeInOut;"
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                            data-mask_out="x:0;y:0;s:inherit;e:inherit;"
+                            data-start="1000"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            style="z-index: 8; font-style: italic; white-space: nowrap;">
+                            Don't miss out to try the new look of design.
+                        </div>
+                        <div class="tp-caption tp-resizeme color-white"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','0']"
+                            data-fontsize="['110','100','90','50']"
+                            data-lineheight="['130','120','110','70']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="auto:auto;s:1000;e:Power3.easeInOut;"
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;"
+                            data-mask_out="x:0;y:0;s:inherit;e:inherit;"
+                            data-start="1000"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            data-lasttriggerstate="reset"
+                            style="z-index: 7; white-space: nowrap;">
+                            Ark - Big Possiblities
+                        </div>
+                        <div class="tp-caption"
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['170','160','160','110']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Linear.easeNone;"
+                            data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);cursor:pointer;"
+                            data-transform_in="y:50px;opacity:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="opacity:0;s:2;e:Linear.easeNone;s:2;e:Linear.easeNone;"
+                            data-start="1000"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-actions='[{"event":"click","action":"scrollbelow","offset":"20px"}]'
+                            data-responsive_offset="on"
+                            data-responsive="off"
+                            data-lasttriggerstate="reset"
+                            style="z-index: 9; white-space: nowrap;">
+                            <button type="button" class="btn-white-bg btn-base-md radius-3">Get Started</button>
+                        </div>
+                    </li>
+                    <!-- End Slide -->
+
+                    <!-- Slide -->
+                    <li data-transition="boxfade" data-slotamount="7" data-easein="Expo.easeOut" data-easeout="Expo.easeOut" data-masterspeed="2000" data-thumb="<?php echo $this->basePath('assets/img/1920x1080/11.jpg'); ?>" data-rotate="0" data-saveperformance="off" data-title="Sign up for Newsletter">
+                        <!-- Main Image -->
+                        <img src="<?php echo $this->basePath('assets/img/1920x1080/11.jpg'); ?>" alt="" data-bgposition="center center" data-no-retina>
+                        <!-- Layers -->
+                        <div class="tp-caption tp-resizeme color-white"
+                            data-x="['left','left','left','left']" data-hoffset="['0','0','0','40']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['-80','-80','-80','-80']"
+                            data-fontsize="['70','70','60','35']"
+                            data-lineheight="['90','90','80','50']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="z:0;rX:0deg;rY:0;rZ:0;sX:1.5;sY:1.5;skX:0;skY:0;opacity:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                            data-mask_in="x:0px;y:0px;"
+                            data-mask_out="x:inherit;y:inherit;"
+                            data-start="1500"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            style="z-index: 7; white-space: nowrap;">
+                            We are make Neat
+                        </div>
+                        <div class="tp-caption tp-resizeme color-white"
+                            data-x="['left','left','left','left']" data-hoffset="['0','0','0','40']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['0','0','0','-30']"
+                            data-fontsize="['70','70','60','35']"
+                            data-lineheight="['90','90','80','50']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="z:0;rX:0deg;rY:0;rZ:0;sX:1.5;sY:1.5;skX:0;skY:0;opacity:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                            data-mask_in="x:0px;y:0px;"
+                            data-mask_out="x:inherit;y:inherit;"
+                            data-start="1500"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            style="z-index: 7; white-space: nowrap;">
+                            designs touch soul
+                        </div>
+                        <div class="tp-caption tp-resizeme fweight-200 color-white"
+                            data-x="['left','left','left','left']" data-hoffset="['0','0','0','40']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['80','80','80','30']"
+                            data-fontsize="['30','30','30','25']"
+                            data-lineheight="['40','40','40','35']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                            data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
+                            data-start="1500"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            style="z-index: 8; font-style: italic; white-space: nowrap;">
+                            Sign up for our Weekly newsletter
+                        </div>
+                        <div class="tp-caption"
+                            data-x="['left','left','left','left']" data-hoffset="['0','0','0','40']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['160','150','160','100']"
+                            data-width="['300','300','300','250']"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                            data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);cursor:pointer;"
+                            data-transform_in="y:50px;opacity:0;s:1500;e:Power4.easeInOut;"
+                            data-transform_out="y:[175%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
+                            data-start="1250"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive="on"
+                            style="z-index: 9; white-space: nowrap;">
+                            <input type="text" class="form-control radius-3" placeholder="Email Address">
+                        </div>
+                        <div class="tp-caption"
+                            data-x="['center','center','center','left']" data-hoffset="['-220','-120','20','40']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['161','151','161','161']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_hover="o:1;rX:0;rY:0;rZ:0;z:0;s:300;e:Power1.easeInOut;"
+                            data-style_hover="c:rgba(255, 255, 255, 1.00);bc:rgba(255, 255, 255, 1.00);cursor:pointer;"
+                            data-transform_in="y:50px;opacity:0;s:1500;e:Power4.easeInOut;"
+                            data-transform_out="y:[175%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
+                            data-start="1250"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive="on"
+                            style="z-index: 9; white-space: nowrap;">
+                            <button type="button" class="btn-white-bg btn-base-sm radius-3">Subscribe</button>
+                        </div>
+                        <div class="tp-caption tp-resizeme fweight-200 color-white"
+                            data-x="['left','left','left','left']" data-hoffset="['0','0','0','40']"
+                            data-y="['middle','middle','middle','middle']" data-voffset="['210','200','210','210']"
+                            data-fontsize="['17','17','19','15']"
+                            data-lineheight="['25','25','25','20']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;s:1500;e:Power4.easeInOut;"
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;"
+                            data-mask_in="x:0px;y:[100%];s:inherit;e:inherit;"
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;"
+                            data-start="1500"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-responsive_offset="on"
+                            style="z-index: 8; white-space: nowrap;">
+                            Be first to find out when we Launch our product.
+                        </div>
+                        <div class="tp-caption scrollbelow-action-icon color-white" 
+                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
+                            data-y="['bottom','bottom','bottom','bottom']" data-voffset="['30','30','30','30']"
+                            data-width="none"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-style_hover="cursor:pointer;"
+                            data-transform_in="y:50px;opacity:0;s:1500;e:Power3.easeInOut;"
+                            data-transform_out="y:50px;opacity:0;s:1000;s:1000;"
+                            data-start="2000"
+                            data-splitin="none"
+                            data-splitout="none"
+                            data-actions='[{"event":"click","action":"scrollbelow","offset":"-70px"}]'
+                            data-basealign="slide"
+                            data-responsive_offset="off"
+                            data-responsive="off"
+                            style="z-index: 11;">
+                            <i class="fa fa-angle-double-down"></i>
+                        </div>
+                    </li>
+                    <!-- End Slide -->
+                </ul>
+            </div>
+        </div>
+        <!--========== END REVOLUTION SLIDER ==========-->
+        
+        <!--========== PAGE CONTENT ==========-->
+        <?php echo $this->content; ?>
+        <!--========== END PAGE CONTENT ==========-->
+
+        <!--========== FOOTER V4 ==========-->
+        <footer id="footer" class="footer-v4">
+            <div class="container">
+                <!-- Logo -->
+                <div class="center-block">
+                    <a href="index.html">
+                        <img class="footer-v4-logo" src="<?php echo $this->basePath('assets/img/logo-default-white.png'); ?>" alt="">
+                    </a>
+                </div>
+                <!-- End Logo -->
+
+                <!-- Content -->
+                <div class="footer-v4-content">
+                    <div class="row">
+                        <div class="col-sm-6 sm-margin-b-30">
+                            <h3 class="footer-v4-title">What we offer</h3>
+
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 col-xs-6 xs-full-width md-margin-b-30">
+                                    <!-- Services -->
+                                    <ul class="list-unstyled footer-v4-service">
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    How you can impact your customers
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    Is your website user friendly?
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    Ark offers weekly stunning designs.
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    Why our customers love Ark?
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    What we do is all about passion
+                                    </a>
+                                    </li>
+                                    </ul>
+                                    <!-- End Services -->
+                                </div>
+
+                                <div class="col-md-6 col-sm-12 col-xs-6 xs-full-width">
+                                    <!-- Services -->
+                                    <ul class="list-unstyled footer-v4-service">
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    24/7 Support
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    Smart and beautiful design
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    Unlimited Eelements
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    Mobile ready
+                                    </a>
+                                    </li>
+                                    <li class="footer-v4-service-item">
+                                    <i class="footer-v4-service-icon fa fa-angle-right"></i>
+                                    <a class="footer-v4-service-link" href="#">
+                                    Latest trends and much more...
+                                    </a>
+                                    </li>
+                                    </ul>
+                                    <!-- End Services -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-xs-6 xs-full-width md-margin-b-30">
+                        <h3 class="footer-v4-title">Features</h3>
+                        <!-- News -->
+                        <ul class="list-unstyled footer-v4-news">
+                        <li class="footer-v4-news-item">
+                        <div class="footer-v4-news-media">
+                        <img class="footer-v4-news-img radius-circle" src="<?php echo $this->basePath('assets/img/250x250/05.jpg'); ?>" alt="">
+                        </div>
+                        <div class="footer-v4-news-content">
+                        <a class="footer-v4-news-link" href="#">
+                        Smart and beautiful design
+                        </a>
+                        <small class="footer-v4-news-date">Aug 25, 2016</small>
+                        </div>
+                        </li>
+                        <li class="footer-v4-news-item">
+                        <div class="footer-v4-news-media">
+                        <img class="footer-v4-news-img radius-circle" src="<?php echo $this->basePath('assets/img/250x250/06.jpg'); ?>" alt="">
+                        </div>
+                        <div class="footer-v4-news-content">
+                        <a class="footer-v4-news-link" href="#">
+                        Unlimited Eelements
+                        </a>
+                        <small class="footer-v4-news-date">Aug 25, 2016</small>
+                        </div>
+                        </li>
+                        <li class="footer-v4-news-item">
+                        <div class="footer-v4-news-media">
+                        <img class="footer-v4-news-img radius-circle" src="<?php echo $this->basePath('assets/img/250x250/07.jpg'); ?>" alt="">
+                        </div>
+                        <div class="footer-v4-news-content">
+                        <a class="footer-v4-news-link" href="#">
+                        Mobile ready
+                        </a>
+                        <small class="footer-v4-news-date">Aug 25, 2016</small>
+                        </div>
+                        </li>
+                        </ul>
+                        <!-- End News -->
+                        </div>
+                        <div class="col-md-3 col-xs-6 xs-full-width">
+                        <!-- Contacts -->
+                        <div class="margin-b-20">
+                        <h3 class="footer-v4-title">Contact Info</h3>
+                        <p class="footer-v4-text">1600 Amphitheatre Parkway, Mountain View, CA 94043</p>
+                        </div>
+                        <div class="margin-b-20">
+                        <p class="footer-v4-text">+1 650-253-0000</p>
+                        <a class="footer-v4-link" href="#">prothemes.net@gmail.com</a>
+                        </div>
+                        <p class="footer-v4-text">Daily: 9:00 am - 6:00 pm</p>
+                        <p class="footer-v4-text">Sunday: Closed</p>
+                        <!-- End Contacts -->
+                        </div>
+                    </div>
+                    <!--// end row -->
+                </div>
+                <!-- End Content -->
+
+                <!-- Copyright -->
+                <div class="footer-v4-copyright">
+                <div class="row">
+                <div class="col-sm-4 sm-margin-b-30">
+                <p class="footer-v4-copyright-text">Copyright &#169; 2016 Prothemes. All Rights Reserved.</p>
+                </div>
+                <div class="col-sm-4 sm-margin-b-30">
+                <!-- Theme Icons White Background -->
+                <ul class="list-inline text-center ul-li-lr-2 margin-b-0">
+                <li class="theme-icons-wrap"><a href="#"><i class="theme-icons theme-icons-white-bg theme-icons-xs radius-circle fa fa-facebook"></i></a></li>
+                <li class="theme-icons-wrap"><a href="#"><i class="theme-icons theme-icons-white-bg theme-icons-xs radius-circle fa fa-twitter"></i></a></li>
+                <li class="theme-icons-wrap"><a href="#"><i class="theme-icons theme-icons-white-bg theme-icons-xs radius-circle fa fa-instagram"></i></a></li>
+                <li class="theme-icons-wrap"><a href="#"><i class="theme-icons theme-icons-white-bg theme-icons-xs radius-circle fa fa-dribbble"></i></a></li>
+                <li class="theme-icons-wrap"><a href="#"><i class="theme-icons theme-icons-white-bg theme-icons-xs radius-circle fa fa-google-plus"></i></a></li>
+                </ul>
+                <!-- ENd Theme Icons White Background -->
+                </div>
+                <div class="col-sm-4">
+                <!-- Terms List -->
+                <ul class="list-inline footer-v4-terms-list">
+                <li class="footer-v4-terms-item"><a class="footer-v4-terms-link" href="#">Terms &amp; Conditions</a></li>
+                <li class="footer-v4-terms-item"><a class="footer-v4-terms-link" href="#">Privacy &amp; Policy</a></li>
+                </ul>
+                <!-- End Terms List -->
+                </div>
+                </div>
+                </div>
+                <!-- End Copyright -->
+            </div>
+        </footer>
+        <!--========== END FOOTER V4 ==========-->
+    </div>
+
+    <!-- Sidebar Content Overlay -->
+    <div class="sidebar-content-overlay"></div>
+    <!-- End Sidebar Content Overlay -->
+
+    <!-- Back To Top -->
+    <a href="javascript:void(0);" class="js-back-to-top back-to-top-theme"></a>
+    <!-- End Back To Top -->
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/plugins/jquery.migrate.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/plugins/bootstrap/js/bootstrap.min.js'); ?>"></script>
+<?php
+    echo $this->inlineScript()
+        ->prependFile($this->basePath('assets/scripts/components/equal-height.js'))
+        ->prependFile($this->basePath('assets/scripts/components/form-modal.js'))
+        ->prependFile($this->basePath('assets/scripts/components/wow.js'))
+        ->prependFile($this->basePath('assets/scripts/components/scrollbar.js'))
+        ->prependFile($this->basePath('assets/scripts/components/animsition.js'))
+        ->prependFile($this->basePath('assets/scripts/components/header-sticky.js'))
+        ->prependFile($this->basePath('assets/scripts/app.js'))
+        ->prependFile($this->basePath('assets/plugins/jquery.equal-height.js'))
+        ->prependFile($this->basePath('assets/plugins/jquery.wow.min.js'))
+        ->prependFile($this->basePath('assets/plugins/scrollbar/jquery.mCustomScrollbar.concat.min.js'))
+        ->prependFile($this->basePath('assets/plugins/jquery.animsition.min.js'))
+        ->prependFile($this->basePath('assets/plugins/jquery.smooth-scroll.js'))
+        ->prependFile($this->basePath('assets/plugins/jquery.back-to-top.js'));
+?>
+</body>
+</html> 

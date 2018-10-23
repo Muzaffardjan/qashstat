@@ -1,0 +1,36 @@
+<?php  
+    $this->headTitle()->append($this->translate('Delete'))->append($this->translate('Answer'))->append($this->translate('Quiz'));
+?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Delete answer') ?></h2>
+        <?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs() 
+                      ->setMinDepth(0)              
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="middle-box text-center alert alert-danger">
+        <h3 class="font-bold"><?php echo $this->translate('Are you sure?') ?></h3>
+        <div class="error-desc">
+            <div class="well text-left">
+                <h4>
+                    <span><?php echo $this->answer->text ?></span>
+                    <span class="label label-info pull-right">
+                        <b><?php echo $this->translate('Votes') ?>:</b> <?php echo $this->answer->voted ?>
+                    </span>
+                </h4>
+            </div>
+            <?php echo $this->translate('Answer will be deleted. This operation can not be prevented!') ?>
+            <br>
+            <a class="btn btn-danger m-t" href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale(), 'action' => 'deleteAnswer', 'id' => $this->answer->id), array('query' => array('confirm' => true))) ?>"><?php echo $this->translate('Delete') ?></a>
+        	<a class="btn btn-primary m-t" href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale(), 'action' => 'edit', 'id' => $this->answer->question)) ?>"><?php echo $this->translate('Cancel') ?></a>
+        </div>
+    </div>
+</div>

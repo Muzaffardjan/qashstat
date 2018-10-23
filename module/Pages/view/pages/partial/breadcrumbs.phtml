@@ -1,0 +1,7 @@
+<?php foreach ($this->pages as $key => $page) : ?>
+    <?php if ($key < count($this->pages) - 1) : ?>
+        <li><a href="<?php echo $page->getHref(); ?>"><?php echo $page->getLabel(); ?></a></li>
+    <?php else : ?>
+        <li class="active"><?php echo $page->getLabel(); ?></li>
+    <?php endif; ?>
+<?php endforeach; ?>

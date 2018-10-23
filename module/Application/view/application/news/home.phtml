@@ -1,0 +1,75 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Pages\ArrayObject\News $news
+ */
+$categories = [];
+$cats = $this->pages()->getCategories()->fetchAll()->getCurrentSet();
+
+foreach ($cats as $category) {
+    $categories[$category->id] = $category;
+}
+?>
+
+<?php if (count($this->container) > 0) : ?>
+    <?php foreach ($this->container as $news) : ?>
+        <div class="row">
+            <?php if ($news->image) : ?>
+                <div class="col-md-4">
+                    <img src="<?php echo $news->image ?>" class="img-responsive">
+                </div>
+                <div class="col-md-8">
+                    <div class="news-block">
+                        <a href="<?php
+                        echo $this->url(
+                            'news/view',
+                            [
+                                'locale' => $news->locale,
+                                'category' => $categories[$news->category]->url,
+                                'id' => $news->id
+                            ]
+                        );
+                        ?>" class="news-title">
+                            <?php echo $news->title; ?>
+                        </a>
+
+                        <div class="news-description">
+                            <?php echo $news->description ?>
+                        </div>
+
+                        <div class="news-date"><?php echo date('d-m-Y', $news->added) ?></div>
+                    </div>
+                </div>
+            <?php else : ?>
+                <div class="col-md-12">
+                    <div class="news-block">
+                        <a href="<?php
+                        echo $this->url(
+                            'news/view',
+                            [
+                                'locale' => $news->locale,
+                                'category' => $categories[$news->category]->url,
+                                'id' => $news->id
+                            ]
+                        );
+                        ?>" class="news-title">
+                            <?php echo $news->title; ?>
+                        </a>
+
+                        <div class="news-description">
+                            <?php echo $news->description ?>
+                        </div>
+
+                        <div class="news-date"><?php echo date('d-m-Y', $news->added) ?></div>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+        <hr>
+    <?php endforeach; ?>
+<?php else : ?>
+    <div class="alert alert-info text-center">
+        <h3><i class="rt-icon-pencil2"></i></h3>
+        <h4><?php echo $this->translate('News will be added soon') ?></h4>
+    </div>
+<?php endif; ?>

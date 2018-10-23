@@ -1,0 +1,165 @@
+<?php  
+	$this->headTitle()->append($this->translate('Edit'))->append($this->translate('Quiz'));
+?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2><?php echo $this->translate('Edit question') ?></h2>
+        <?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+    <div class="col-sm-8">
+		<div class="title-action">
+			<a href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale())) ?>" class="btn btn-success">
+				<i class="fa fa-fw fa-check"></i>
+				<span><?php echo $this->translate('Done') ?></span>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Question') ?></h5>
+				</div>
+				<div class="ibox-content">
+					<div class="alert alert-info">
+						<p>
+							<i class="fa fa-fw fa-2x fa-info-circle"></i>
+						</p>
+                    	<p>
+                    		<b><?php echo $this->translate('No need to save question if you just want to work with answers') ?></b>
+                    	</p>
+					</div>
+					<?php 
+						$this->form
+						->setAttribute(
+							'action', 
+							$this->url(
+								'admin/quiz', 
+								array(
+									'locale' => $this->currentLocale(),
+									'action' => 'edit',
+									'id'	 => $this->question->id
+								)
+							)
+						)
+						->prepare();
+
+						echo $this->form()->openTag($this->form);
+					?>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('locale')) ?>
+							<?php  
+								echo $this->formSelect
+								(
+									$this->form->get('locale')
+									->setAttribute('class', 'form-control')
+								)
+							?>
+							<?php echo $this->formElementErrors($this->form->get('locale')) ?>
+						</div>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('text')) ?>
+							<?php  
+								echo $this->formTextarea
+								(
+									$this->form->get('text')
+									->setAttribute('class', 'form-control')
+								)
+							?>
+							<?php echo $this->formElementErrors($this->form->get('text')) ?>
+						</div>
+						<div>
+							<button type="submit" class="btn btn-white">
+								<i class="fa fa-fw fa-check"></i>
+								<span><?php echo $this->translate('Save') ?></span>
+							</button>
+							<a href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale())) ?>" class="btn btn-white">
+								<i class="fa fa-fw fa-times"></i>
+								<span><?php echo $this->translate('Cancel') ?></span>
+							</a>
+						</div>
+					<?php echo $this->form()->closeTag() ?>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Answers') ?></h5>
+				</div>
+				<div class="ibox-content">
+					<div>
+						<?php if($answers = $this->question->getAnswers()): ?>
+							<ul class="list-group">
+								<?php foreach ($answers as $answer): ?>
+									<?php  
+										$percentage = round(100 * ($answer->getVotesCount() / ($this->question->getVotesCount() ? $this->question->getVotesCount() : 1)), 1);
+									?>
+		                            <li class="list-group-item">
+		                            	<div class="row">
+		                            		<div class="col-md-5 col-xs-8" style="padding-top: 6px;">
+			                            		<h4 style="vertical-align: middle;"><?php echo $answer->text ?></h4>
+			                            	</div>
+			                            	<div class="col-md-3 hidden-xs hidden-sm" style="padding-top: 6px;">
+			                            		<div class="progress">
+					                                <div class="progress-bar progress-bar-success" style="width: <?php echo $percentage ?>%;">
+					                                    <span style="mix-blend-mode: exclusion;"><?php echo $percentage ?>%</span>
+					                                </div>
+					                            </div>
+			                            	</div>
+			                            	<div class="col-xs-4 text-right">
+				                            	<button data-toggle="tooltip" data-original-title="<?php echo $this->translate('Vote count') ?>" type="button" class="btn btn-white btn-rounded">
+				                            		<span><?php echo $answer->getVotesCount() ?></span>
+				                            	</button>
+			                            		<a href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale(), 'action' => 'editAnswer', 'id' => $answer->id)) ?>" data-toggle="tooltip" data-original-title="<?php echo $this->translate('Edit') ?>" class="btn btn-success btn-outline btn-rounded">
+				                            		<i class="fa fa-edit"></i>
+				                            	</a>
+				                            	<a href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale(), 'action' => 'deleteAnswer', 'id' => $answer->id)) ?>" data-toggle="tooltip" data-original-title="<?php echo $this->translate('Delete') ?>" class="btn btn-danger btn-outline btn-rounded">
+				                            		<i class="fa fa-trash-o"></i>
+				                            	</a>
+			                            	</div>
+		                            	</div>                          	
+		                            </li>
+								<?php endforeach ?>
+	                        </ul>
+						<?php else: ?>
+							<div class="alert alert-warning">
+	                        	<p>
+									<i class="fa fa-fw fa-2x fa-info-circle"></i>
+								</p>
+		                    	<p>
+		                    		<b><?php echo $this->translate('Answers didn\'t added yet') ?></b>
+		                    	</p>
+		                    	<p>
+		                    		<b><?php echo $this->translate('To add one click link below') ?></b>
+		                    	</p>
+	                        </div>
+						<?php endif ?>                        
+					</div>
+					<div>
+						<a href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale(), 'action' => 'addAnswer', 'id' => $this->question->id)) ?>" class="btn btn-success btn-outline">
+							<i class="fa fa-plus"></i>
+							<span><?php echo $this->translate('Add answer to question') ?></span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php  
+	$this->inlineScript()
+	->appendScript("
+		$('*[data-toggle=\"tooltip\"]').tooltip();
+	");
+?>

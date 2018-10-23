@@ -1,0 +1,26 @@
+<?php echo $this->headTitle()->append($this->translate('Delete menu')) ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Delete menu') ?></h2>
+        <?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs() 
+                      ->setMinDepth(0)              
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="middle-box text-center alert alert-danger">
+        <h3 class="font-bold"><?php echo $this->translate('Are you sure?') ?></h3>
+        <div class="error-desc">
+            <?php echo sprintf($this->translate('Menu: \'%s\' will be deleted. This operation can not be prevented!'), $this->menu->name) ?>
+            <br>
+            <a class="btn btn-danger m-t" href="<?php echo $this->url('admin/menu', array('locale' => $this->currentLocale(), 'action' => 'delete', 'menu' => $this->menu->id), array('query' => array('confirm' => true))) ?>"><?php echo $this->translate('Delete') ?></a>
+        	<a class="btn btn-primary m-t" href="<?php echo $this->url('admin/menu', array('locale' => $this->currentLocale())) ?>"><?php echo $this->translate('Cancel') ?></a>
+        </div>
+    </div>
+</div>

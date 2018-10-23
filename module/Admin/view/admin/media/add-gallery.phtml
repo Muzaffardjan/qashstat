@@ -1,0 +1,64 @@
+<?php echo $this->headTitle()->append($this->translate('Add gallery'))->append($this->translate('Media')) ?>
+<?php $this->form->prepare(); ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-8">
+		<h2><?php echo $this->translate('Add gallery') ?></h2>
+		<?php
+			$this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+			echo $this->navigation()
+					  ->breadcrumbs()
+					  ->setMinDepth(0)               
+					  ->setMaxDepth(4)         
+					  ->setPartial('partial/admin-breadcrumbs');
+		?>
+	</div>
+	<div class="col-sm-4">
+		<div class="title-action">
+			<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'galleries')) ?>" class="btn btn-primary">
+				<i class="fa fa-arrow-left"></i>
+				<?php echo $this->translate('Back'); ?>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">   
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Add gallery'); ?></h5>
+				</div>
+				<div class="ibox-content">
+					<?php echo $this->form()->openTag($this->form); ?>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('locale')); ?>
+							<?php echo $this->formSelect($this->form->get('locale')); ?>
+							<?php echo $this->formElementErrors($this->form->get('locale')); ?>
+						</div>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('title')); ?>
+							<?php echo $this->formText($this->form->get('title')); ?>
+							<?php echo $this->formElementErrors($this->form->get('title')); ?>
+						</div>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('images')); ?>
+							<?php echo $this->formSelect($this->form->get('images')); ?>
+							<?php echo $this->formElementErrors($this->form->get('images')); ?>
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary">
+								<i class="fa fa-save"></i>
+								<?php echo $this->translate('Add'); ?>
+							</button>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'galleries')); ?>" class="btn btn-danger">
+								<i class="fa fa-remove"></i>
+								<?php echo $this->translate('Cancel'); ?>
+							</a>
+						</div>
+					<?php echo $this->form()->closeTag(); ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,132 @@
+<?php $this->headTitle()->append($this->translate('Categories')) ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Categories') ?></h2>
+        <?php
+			/*$this->plugin('navigation')->setContainer($this->navigation()->getContainer());*/
+
+			echo $this->navigation('Zend\Navigation\Admin')
+			          ->breadcrumbs()
+			          ->setMinDepth(0)               
+			          ->setMaxDepth(4)         
+			          ->setPartial('partial/admin-breadcrumbs');
+		?>
+    </div>
+    <div class="col-sm-4">
+        <div class="title-action">
+            <a class="btn btn-primary" href="<?php echo $this->url('admin/categories', array('locale' => $this->currentLocale(), 'action' => 'add')) ?>"><?php echo $this->translate('Add category') ?></a>
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+	<?php if($this->categories): ?>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5><?php echo $this->translate('Categories') ?></h5>
+						<div class="ibox-tools">
+	                        <a class="collapse-link">
+	                            <i class="fa fa-chevron-down"></i>
+	                        </a>
+	                    </div>
+					</div>
+					<div class="ibox-content table-responsive">
+						<table class="table datatable">
+							<thead>
+								<th>#</th>
+								<th><?php echo $this->translate('Title') ?></th>
+								<th>Action</th>
+							</thead>
+							<tbody>
+								<?php $order = 1; foreach($this->categories as $category): ?>
+									<tr>
+										<td><?php echo $order ?></td>
+										<td><?php echo $category->title ?></td>
+										<td>
+											<a
+                                                class="btn btn-default btn-rounded btn-outline"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Edit')) ?>"
+                                                href="<?php
+                                                    echo $this->url(
+                                                        'admin/categories',
+                                                        [
+                                                            'locale' => $this->currentLocale(),
+                                                            'action' => 'edit',
+                                                            'category' => $category->id
+                                                        ]
+                                                    )
+                                                ?>"
+                                            >
+												<i class="fa fa-edit"></i>
+											</a>
+
+											<a
+                                                class="btn btn-default btn-rounded btn-outline"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Delete')) ?>"
+                                                href="<?php
+                                                    echo $this->url(
+                                                        'admin/categories',
+                                                        [
+                                                            'locale' => $this->currentLocale(),
+                                                            'action' => 'delete',
+                                                            'category' => $category->id
+                                                        ]
+                                                    )
+                                                ?>"
+                                            >
+												<i class="fa fa-trash"></i>
+											</a>
+										</td>
+									</tr>
+								<?php $order++; endforeach; ?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	<?php else: ?>
+		<div class="middle-box text-center alert alert-info">
+	        <h3 class="font-bold"><?php echo $this->translate('There are no categories to display') ?></h3>
+	        <div class="error-desc">
+	            <?php echo $this->translate('You can add new one by clicking link below') ?>
+	            <br>
+	            <a class="btn btn-info m-t" href="<?php echo $this->url('admin/categories', array('locale' => $this->currentLocale(), 'action' => 'add')) ?>"><?php echo $this->translate('Add category') ?></a>
+	        </div>
+	    </div>
+	<?php endif; ?>
+</div>
+
+<?php
+	$this->headStyle()->appendStyle("
+		.white--space-nowrap {
+			white-space: nowrap;
+		}
+	");
+
+	$this->headLink()
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.css'))
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.responsive.css'))
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.css'))
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.custom.css'));
+
+	$this->inlineScript()
+	->appendFile($this->basePath('dist/plugins/dataTables/jquery.dataTables.js'))
+	->appendFile($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.js'))
+	->appendFile($this->basePath('dist/plugins/dataTables/dataTables.responsive.js'))
+	->appendFile($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.js'))
+	->appendScript("
+		$('.datatable').dataTable({
+            'responsive': true,
+            'language': {
+                'url': '".$this->url('application/default', ['locale' => $this->currentLocale(), 'controller' => 'jsPlugins', 'action' => 'datatablesI18n'])."'
+            }
+        });
+		$('*[data-toggle=\"tooltip\"]').tooltip();
+	");
+?>

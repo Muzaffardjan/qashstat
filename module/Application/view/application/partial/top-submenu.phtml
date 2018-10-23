@@ -1,0 +1,24 @@
+<?php  
+use Zend\Navigation\Page\Mvc;
+
+foreach ($this->container as $page) :
+
+    if ($page instanceof Mvc) {
+        $params = $page->getParams();
+
+        if (!isset($params['locale']) || $params['locale']) {
+            $params['locale'] = $this->currentLocale();
+            $page->setParams($params);
+        }
+    }
+?>
+	<li>
+        <a href="<?php
+            echo ($page->getHref() == '#') ? 
+                'javascript:void(0);' : 
+                $page->getHref();
+        ?>">
+			<?php echo $page->getLabel(); ?>
+		</a>
+	</li>
+<?php endforeach; ?>

@@ -1,0 +1,125 @@
+<?php 
+	$this->form->prepare();
+	echo $this->headTitle()->append($this->translate('Edit image'))->append($this->translate('Media'));
+	$mediaConfig = $this->getHelperPluginManager()->getServiceLocator()->get('config')['media'];
+?>
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-8">
+		<h2><?php echo $this->translate('Edit image') ?></h2>
+		<?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+	</div>
+	<div class="col-sm-4">
+		<div class="title-action">
+            <a class="btn btn-primary" href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'editImageCollection', 'collection' => $this->image->name)); ?>">
+            	<i class="fa fa-check"></i>
+            	<?php echo $this->translate('Done'); ?>
+            </a>
+        </div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Edit image'); ?></h5>
+					<div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+				</div>
+				<div class="ibox-content">
+					<h4><?php echo $this->translate('Image'); ?></h4>	
+					<div class="preview" style="margin-bottom: 25px;">
+						<?php $imgPath = $mediaConfig['public_path'] . 'collection_' . $this->image->name . '/' . $this->image->src; ?>
+						<img src="<?php echo $this->basePath($imgPath); ?>" class="img-responsive img-thumbnail">
+					</div>
+
+					<?php if (count($this->descriptions) > 0) : ?>
+					<h2><?php echo $this->translate('Image information'); ?></h2>
+					<div class="tabs-container">
+						<!-- Nav tabs -->
+						<ul class="nav nav-tabs" role="tablist">
+							<?php $isFirst = true; ?>
+							<?php foreach ($this->descriptions as $desc) : ?>
+							<li role="presentation"<?php if ($isFirst) { $isFirst = false; echo ' class="active"'; } ?>>
+								<a href="#<?php echo $desc->locale; ?>_tab" aria-controls="<?php echo $desc->locale ?>_tab" role="tab" data-toggle="tab"><?php echo $desc->localeName; ?></a>
+							</li>
+							<?php endforeach; ?>
+						</ul>
+
+						<!-- Tab panes -->
+						<div class="tab-content">
+						<?php $isFirst = true; ?>
+						<?php foreach ($this->descriptions as $desc) : ?>
+							<div role="tabpanel" class="tab-pane fade<?php if ($isFirst) { $isFirst = false; echo ' in active'; } ?>" id="<?php echo $desc->locale ?>_tab">
+								<div class="col-xs-10" style="padding: 15px;">
+									<h4><?php echo $this->translate('Image title'); ?>: <?php echo $desc->title ?></h4>
+									<?php if ($desc->text) : ?>
+									<h4><?php echo $this->translate('Description') ?>:</h4>
+									<p><?php echo $desc->text; ?></p>
+									<?php endif ?>
+								</div>
+								<div class="col-xs-2" style="padding: 15px;">
+									<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'deleteImageDescription', 'collection' => $this->image->id, 'id' => $desc->id)) ?>" class="btn btn-danger delete-desc-btn">
+										<i class="fa fa-trash"></i>
+										<span class="hidden-xs"><?php echo $this->translate('Delete'); ?></span>
+									</a>
+								</div>
+							</div>
+						<?php endforeach; ?>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<br>
+					<?php endif; ?>
+					<?php if (count($this->locales) > 0) : ?>						
+					<h2><?php echo $this->translate('Add information to image') ?></h2>
+					<?php echo $this->form()->openTag($this->form); ?>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('locale')); ?>
+							<?php echo $this->formSelect($this->form->get('locale')); ?>
+							<?php echo $this->formElementErrors($this->form->get('locale')); ?>
+						</div>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('title')); ?>
+							<?php echo $this->formText($this->form->get('title')); ?>
+							<?php echo $this->formElementErrors($this->form->get('title')); ?>
+						</div>
+						<div class="form-group">
+							<?php echo $this->formLabel($this->form->get('text')); ?>
+							<?php echo $this->formTextarea($this->form->get('text')); ?>
+							<?php echo $this->formElementErrors($this->form->get('text')); ?>
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary">
+								<i class="fa fa-save"></i>
+								<?php echo $this->translate('Add'); ?>
+							</button>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'editImageCollection', 'collection' => $this->image->name)); ?>" class="btn btn-danger">
+								<i class="fa fa-remove"></i>
+								<?php echo $this->translate('Cancel'); ?>
+							</a>
+						</div>
+					<?php echo $this->form()->closeTag(); ?>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$('.delete-desc-btn').click(function() {
+		if ( ! confirm("<?php echo $this->translate('Do you want to delete this description ?'); ?>"))
+			return false;
+	});
+</script>

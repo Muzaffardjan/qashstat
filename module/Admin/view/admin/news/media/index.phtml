@@ -1,0 +1,72 @@
+<?php echo $this->headTitle()->append($this->translate('Media')) ?>
+<?php $locale = $this->currentLocale(); ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-8">
+		<h2><?php echo $this->translate('Media') ?></h2>
+		<?php
+			$this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+			echo $this->navigation()
+					  ->breadcrumbs()
+					  ->setMinDepth(0)               
+					  ->setMaxDepth(4)         
+					  ->setPartial('partial/admin-breadcrumbs');
+		?>
+	</div>
+	<div class="col-sm-4">
+	</div>
+</div>
+<div class="wrapper wrapper-content">   
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Media'); ?></h5>
+				</div>
+				<div class="ibox-content">
+					<div class="col-md-4 col-sm-6 text-center">
+						<div class="thumbnail" style="padding: 15px; border-radius: 0px;">
+							<h2><?php echo $this->translate('Image collections'); ?></h2><br>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $locale, 'action' => 'collections')) ?>" class="btn btn-primary btn-block">
+								<i class="fa fa-th-list"></i>
+								<?php echo $this->translate('View list'); ?>
+							</a>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $locale, 'action' => 'addImageCollection')) ?>" class="btn btn-primary btn-block">
+								<i class="fa fa-plus"></i>
+								<?php echo $this->translate('Add new one'); ?>
+							</a>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-6 text-center">
+						<div class="thumbnail" style="padding: 15px; border-radius: 0px;">
+							<h2><?php echo $this->translate('Galleries'); ?></h2><br>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $locale, 'action' => 'galleries')) ?>" class="btn btn-primary btn-block">
+								<i class="fa fa-list"></i>
+								<?php echo $this->translate('View list'); ?>
+							</a>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $locale, 'action' => 'addGallery')) ?>" class="btn btn-primary btn-block">
+								<i class="fa fa-plus"></i>
+								<?php echo $this->translate('Add new one'); ?>
+							</a>
+						</div>
+					</div>
+					<div class="clearfix visible-sm"></div>
+					<div class="col-md-4 col-sm-6 text-center">
+						<div class="thumbnail" style="padding: 15px; border-radius: 0px;">
+							<h2><?php echo $this->translate('Video files'); ?></h2><br>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $locale, 'action' => 'videos')) ?>" class="btn btn-primary btn-block">
+								<i class="fa fa-th-list"></i>
+								<?php echo $this->translate('View list'); ?>
+							</a>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $locale, 'action' => 'addVideo')) ?>" class="btn btn-primary btn-block">
+								<i class="fa fa-plus"></i>
+								<?php echo $this->translate('Add new one'); ?>
+							</a>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

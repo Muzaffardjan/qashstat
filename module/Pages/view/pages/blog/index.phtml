@@ -1,0 +1,146 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Pages\ArrayObject\News $news
+ */
+
+$this->headTitle()->append($this->translate('Blog'));
+
+$categories = $this->pages()->getCategories()->fetchAll()->getCurrentSet();
+?>
+
+<div class="page-view">
+    <div class="pull-right print_button">
+        <i title="" data-original-title="" class="ezo-print"></i>
+    </div>
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="<?php echo $this->url('home-locale', ['locale' => $this->currentLocale()]) ?>">
+                <?php echo $this->translate('Home') ?>
+            </a>
+        </li>
+
+        <?php if (! $this->get('category')) : ?>
+            <li class="active"><?php echo $this->translate('Blog') ?></li>
+        <?php else : ?>
+            <li>
+                <a href="<?php echo $this->url('blog/default', ['locale' => $this->currentLocale()]) ?>">
+                    <?php echo $this->translate('Blog') ?>
+                </a>
+            </li>
+
+            <li class="active">
+                <?php echo $this->get('category')->title ?>
+            </li>
+        <?php endif; ?>
+    </ol>
+
+    <?php if ($this->get('posts')->count()) : ?>
+        <?php foreach ($this->get('posts') as $news) : ?>
+            <div class="row">
+                <?php if ($news->image) : ?>
+                    <div class="col-md-6">
+                        <img src="<?php echo $news->image ?>" class="img-responsive">
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="news-block">
+                            <a href="<?php
+                                echo $this->url(
+                                    'news/view',
+                                    [
+                                        'locale' => $news->locale,
+                                        'category' => $categories[$news->category]->url,
+                                        'id' => $news->id
+                                    ]
+                                );
+                            ?>" class="news-title">
+                                <?php echo $news->title ?>
+                            </a>
+
+                            <div class="news-description">
+                                <?php echo $news->description ?>
+                            </div>
+
+                            <div class="news-date"><?php echo date('d-m-Y', $news->added) ?></div>
+                        </div>
+                    </div>
+                <?php else : ?>
+                    <div class="col-md-12">
+                        <div class="news-block">
+                            <a href="<?php
+                                echo $this->url(
+                                    'news/view',
+                                    [
+                                        'locale' => $news->locale,
+                                        'category' => $categories[$news->category]->url,
+                                        'id' => $news->id
+                                    ]
+                                );
+                            ?>" class="news-title">
+                                <?php echo $news->title; ?>
+                            </a>
+
+                            <div class="news-description">
+                                <?php echo $news->description ?>
+                            </div>
+
+                            <div class="news-date"><?php echo date('d-m-Y', $news->added) ?></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <hr>
+        <?php endforeach; ?>
+
+        <?php
+            $params = [];
+
+            if ($this->category instanceof \Pages\ArrayObject\Category) {
+                $params['category'] = $this->category->url;
+            }
+
+            echo $this->paginationControl(
+                $this->get('posts'),
+                \Zend\Paginator\ScrollingStyle\Sliding::class,
+                'pages/partial/blog-paginator',
+                [
+                    'route' => 'blog/default',
+                    'params' => $params
+                ]
+            );
+        ?>
+    <?php endif; ?>
+</div>
+
+<?php
+$events = [];
+
+foreach ($this->news as $event) {
+    $events[] = [
+        'time' => $event->added . '000',
+        'title' => $event->title,
+    ];
+}
+
+if ($events) {
+    $oldest = $events[count($events) - 1]['time'];
+} else {
+    $oldest = 0;
+}
+
+$this->inlineScript()
+    ->prependFile($this->basePath('dist/plugins/jquery-print/jquery.print.js'))
+    ->appendScript("
+        $(window).load(function(){
+            $('#print-a').click(function(){
+                $('#post').print({
+                    noPrintSelector: '.no-print',
+                    prepend: '<h3>".str_replace("'", "", $this->translate('Project name'))."</h3>', 
+                    append: '<a href=\"".$this->serverUrl(true)."\">".$this->serverUrl(true)."</a>',
+                });
+            });
+        });
+    ");
+?>

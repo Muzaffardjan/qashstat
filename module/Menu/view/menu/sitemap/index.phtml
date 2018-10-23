@@ -1,0 +1,53 @@
+<div class="page-view">
+    <div class="pull-right print_button">
+        <i title="" data-original-title="" class="ezo-print"></i>
+    </div>
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="<?php
+                echo $this->url(
+                    'home-locale',
+                    ['locale' => $this->currentLocale()]
+                );
+            ?>">
+                <?php echo $this->translate('Home') ?>
+            </a>
+        </li>
+        <li><?php echo $this->translate('Sitemap'); ?></li>
+    </ol>
+
+    <div class="page-content">
+        <h3><?php echo $this->translate('Sitemap'); ?></h3>
+
+        <?php
+            echo $this->navigation('Menu\Positions\Statictop\\'.$this->currentLocale())
+                ->menu();
+        ?>
+    </div>
+</div>
+
+<?php
+    echo $this->inlineScript()
+        ->prependFile($this->basePath('dist/plugins/jquery-print/jquery.print.js'))
+        ->appendScript(
+            "
+                $(window).load(function(){
+                    $('.ezo-print').tooltip({
+                        placement: 'left',
+                        animation: true,
+                        title: '".$this->translate('Print')."'
+                    });
+
+                    $('#print-a').click(function(){
+                        $('#post').print({
+                            noPrintSelector: '.no-print',
+                            //title: '".str_replace("'", "", $this->translate('Project name'))."',
+                            prepend: '<h3>".str_replace("'", "", $this->translate('Project name'))."</h3>', 
+                            append: '<a href=\"".$this->serverUrl(true)."\">".$this->serverUrl(true)."</a>',
+                        });
+                    });
+                });
+            "
+        );
+?>

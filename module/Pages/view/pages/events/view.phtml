@@ -1,0 +1,97 @@
+<?php  
+    $this->headTitle()->append($this->page->title);
+
+    $this->headMeta()
+        ->appendName('description', $this->page->title)
+        ->appendName('twitter:card', 'summary_large_image')
+        ->appendName('twitter:title', $title = str_replace('"', '', $this->page->title))
+        ->appendName('twitter:description', $this->page->title)
+        ->appendProperty('og:type', 'article')
+        ->appendProperty('og:title', $title)
+        ->appendProperty('og:description', $this->page->title)
+        ->appendProperty('og:url', $this->serverUrl(true))
+        ->appendProperty('og:site_name', str_replace('"', '', $this->translate('Project name')));
+?>
+
+<div class="page-view">
+    <div class="pull-right print_button">
+        <i title="" data-original-title="" class="ezo-print"></i>
+    </div>
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="<?php
+                echo $this->url(
+                    'home-locale', 
+                    ['locale' => $this->currentLocale()]
+                );
+            ?>">
+                <?php echo $this->translate('Home') ?>
+            </a>
+        </li>
+
+        <li>
+            <a href="<?php
+                echo $this->url(
+                    'events/wall', 
+                    ['locale' => $this->currentLocale()]
+                );
+            ?>">
+                <?php echo $this->translate('Events') ?>
+            </a>
+        </li>
+
+        <li class="active"><?php echo $this->page->title; ?>
+    </ol>
+
+    <div class="page-content">
+        <h3><?php echo $this->page->title; ?></h3>
+
+        <?php echo $this->page->body; ?>
+    </div>
+
+    <div class="share">
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $this->serverUrl(true); ?>" class="radius-50">
+                <i class="ezo-facebook"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="https://twitter.com/home?status=<?php echo $this->serverUrl(true); ?>" class="radius-50">
+                <i class="ezo-twitter"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="https://plus.google.com/share?url=<?php echo $this->serverUrl(true); ?>" class="radius-50">
+                <i class="ezo-gplus"></i>
+            </a>
+        </li>
+    </div>
+</div>
+
+<?php
+    $this->inlineScript()
+        ->prependFile($this->basePath('dist/plugins/jquery-print/jquery.print.js'))
+        ->appendScript(
+            "
+                $(window).load(function(){
+                    $('.ezo-print').tooltip({
+                        placement: 'left',
+                        animation: true,
+                        title: '".$this->translate('Print')."'
+                    });
+
+                    $('#print-a').click(function(){
+                        $('#post').print({
+                            noPrintSelector: '.no-print',
+                            //title: '".str_replace("'", "", $this->translate('Project name'))."',
+                            prepend: '<h3>".str_replace("'", "", $this->translate('Project name'))."</h3>', 
+                            append: '<a href=\"".$this->serverUrl(true)."\">".$this->serverUrl(true)."</a>',
+                        });
+                    });
+                });
+            "
+        );
+?>

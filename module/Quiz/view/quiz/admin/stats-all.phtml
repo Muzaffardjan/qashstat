@@ -1,0 +1,114 @@
+<?php  
+	$this->headTitle()->append($this->translate('Statistics'))->append($this->translate('Quiz'));
+?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2><?php echo $this->translate('Quiz statistics') ?></h2>
+        <?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+	<div class="col-sm-8">
+		<div class="title-action">
+			<a href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale())) ?>" class="btn btn-primary">
+				<i class="fa fa-fw fa-wrench"></i>
+				<span><?php echo $this->translate('Return to management') ?></span>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">
+	<?php if ($this->questions): ?>
+		<?php  
+			$blocks 	= array(
+				array(),
+				array(),
+				array(),
+			);
+			$counter 	= 0;
+
+			foreach($this->questions as $question)
+			{
+				$blocks[$counter % count($blocks)][] = $question;
+				$counter++;
+			}
+		?>
+		<div class="row">
+			<?php 
+				foreach ($blocks as $block): 
+
+					if(!count($block))
+					{
+						continue;
+					}
+			?>
+				<div class="col-lg-4">
+					<?php foreach ($block as $question): ?>
+						<?php  
+							$allVotes = $question->getVotesCount();
+						?>
+						<div class="ibox">
+				            <div class="ibox-content">
+				                <h2><?php echo $question->text ?></h2>
+				                <div>
+				                	<?php if ($question->getAnswers()): ?>
+					                	<?php foreach($question->getAnswers() as $answer): ?>
+											<h5><?php echo $answer->text ?> <span title="<?php echo $this->escapeHtmlAttr($this->translate('Votes')) ?>" class="pull-right"><i class="fa fa-fw fa-comment-o"></i> <?php echo $answer->getVotesCount() ?></span></h5>
+											<div class="progress">
+								                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo ($answer->getVotesCount() / ($allVotes ? $allVotes: 1)) * 100 ?>%">
+								                    <span><?php echo round(($answer->getVotesCount() / ($allVotes ? $allVotes: 1)) * 100, 1) ?>%</span>
+								                </div>
+								            </div>
+										<?php endforeach; ?>
+				                	<?php else: ?>
+				                		<div class="alert alert-warning">
+				                			<p>
+												<i class="fa fa-exclamation fa-3x"></i>
+											</p>
+									        <h3 class="font-bold"><?php echo $this->translate('There are no answers to display') ?></h3>
+									        <div class="error-desc">
+									            <?php echo $this->translate('You can add new by clicking link below') ?>
+									            <br>
+									            <a class="btn btn-info m-t" href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale(), 'action' => 'edit', 'id' => $question->id)) ?>"><?php echo $this->translate('Add answers') ?></a>
+									        </div>
+				                		</div>
+				                	<?php endif ?>
+				                </div>
+				                <div>
+                                    <div class="small">
+                                        <h5><?php echo $this->translate('Stats') ?>:</h5>
+                                        <div> <i class="fa fa-comments-o"> </i> <?php echo $allVotes ?> <?php echo strtolower($this->translate('Votes')) ?></div>
+                                    </div>
+                                </div>
+				            </div>
+				        </div>
+					<?php endforeach ?>
+				</div>
+			<?php endforeach ?>
+		</div>
+	<?php else: ?>
+		<div class="middle-box text-center alert alert-info">
+			<p>
+				<i class="fa fa-exclamation fa-3x"></i>
+			</p>
+	        <h3 class="font-bold"><?php echo $this->translate('There are no questions to display') ?></h3>
+	        <div class="error-desc">
+	            <?php echo $this->translate('You can add new by clicking link below') ?>
+	            <br>
+	            <a class="btn btn-info m-t" href="<?php echo $this->url('admin/quiz', array('locale' => $this->currentLocale(), 'action' => 'add')) ?>"><?php echo $this->translate('Add new question') ?></a>
+	        </div>
+	    </div>
+	<?php endif ?>
+</div>
+<?php 
+	$this->inlineScript()
+	->appendScript("
+		$('*[data-toggle=\"tooltip\"]').tooltip();
+	");
+?>

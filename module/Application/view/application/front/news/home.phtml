@@ -1,0 +1,100 @@
+<?php
+$categories = array();
+
+foreach ($this->pages()->getCategories()->fetchAll()->getCurrentSet() as $category) {
+    $categories[$category->id] = $category;
+}
+$counter = 0;
+?>
+<?php if ((is_object($this->container) && $this->container->count()) || count($this->container)): ?>
+    <?php foreach ($this->container as $news): ?>
+        <?php if ($counter == 0) : ?>
+            <div class="row margin-b-30">
+        <?php endif; ?>
+                <div class="col-md-4 md-margin-b-30">
+                    <div class="work-v1">
+                        <a class="work-v1-img-gradient" href="
+                            <?php
+                                echo $this->url(
+                                    'news/view', 
+                                    [
+                                        'locale'   => $news->locale, 
+                                        'category' => (isset($categories[$news->category]) ? $categories[$news->category]->url : ''), 
+                                        'year'     => date('Y', $news->added), 
+                                        'month'    => date('m', $news->added), 
+                                        'date'     => date('d', $news->added), 
+                                        'page'     => $news->url
+                                    ]
+                                );
+                            ?>"
+                        >
+                            <img class="img-responsive" src="<?php echo $news->image; ?>" alt="">
+                            <!--span class="work-v1-view btn-white-brd btn-base-sm radius-3"><?php echo $this->translate('View more'); ?></span-->
+                        </a>
+                        <div class="work-v1-wrap">
+                            <div class="work-v1-content">
+                                <h2 class="work-v1-title">
+                                    <a href="
+                                        <?php
+                                            echo $this->url(
+                                                'news/view', 
+                                                array(
+                                                    'locale' => $news->locale, 
+                                                    'category' => (isset($categories[$news->category]) ? $categories[$news->category]->url : ''), 
+                                                    'year' => date('Y', $news->added), 
+                                                    'month' => date('m', $news->added), 
+                                                    'date' => date('d', $news->added), 
+                                                    'page' => $news->url
+                                                )
+                                            );
+                                        ?>
+                                    ">
+                                        <?php echo $news->title; ?>
+                                    </a>
+                                </h2>
+                                <ul class="list-inline work-v1-list">
+                                    <li class="work-v1-category">
+                                        <a class="work-v1-category-link" href="
+                                            <?php
+                                                echo $this->url(
+                                                    'blog/default', 
+                                                    array(
+                                                        'locale' => $category->locale, 
+                                                        'category' => $categories[$news->category]->url
+                                                    )
+                                                );
+                                            ?>
+                                        ">
+                                            <?php echo $categories[$news->category]->title; ?>
+                                        </a>
+                                    </li>
+                                    <li class="work-v1-date">
+                                        <?php
+                                            echo $this->dateFormat(
+                                                (int) $news->added,
+                                                IntlDateFormatter::LONG, // date
+                                                IntlDateFormatter::NONE, // time
+                                                $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+                                            );
+                                        ?>
+                                    </li>
+                                </ul>
+                                <div class="work-v1-collapse">
+                                    <?php echo $news->description; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <?php $counter++; if ($counter == 3) : ?>
+            </div>
+        <?php $counter = 0; endif; ?>
+    <?php endforeach ?>
+<?php else: ?>
+    <div class="alert alert-info text-center">
+        <h3>
+            <i class="rt-icon-pencil2"></i>
+        </h3>
+        <h4><?php echo $this->translate('News will be added soon') ?></h4>
+    </div>
+<?php endif ?>

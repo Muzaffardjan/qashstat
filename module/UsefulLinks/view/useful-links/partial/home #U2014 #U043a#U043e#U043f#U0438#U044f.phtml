@@ -1,0 +1,19 @@
+<?php if ($this->links): ?>
+	<?php foreach($this->links as $link): ?>
+		<div class="text-center">
+			<a target="_blank" href="<?php echo $link->url ?>">
+				<img src="<?php echo $link->image ?>" class="img-responsive" style="margin: 0 auto;">
+				<h4>
+					<span class="text-info"><?php echo $link->title ?></span>
+				</h4>
+			</a>
+		</div>
+	<?php endforeach ?>
+<?php else: ?>
+	<div class="alert alert-info" style="width: 100% !important;">
+		<h3>
+            <i class="rt-icon-pencil2"></i>
+        </h3>
+        <h4><?php echo $this->translate('Information will be added soon') ?></h4>
+	</div>
+<?php endif ?>

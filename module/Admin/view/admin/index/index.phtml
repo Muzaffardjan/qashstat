@@ -1,0 +1,26 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-10">
+		<h2><?php echo sprintf($this->translate('Welcome to dashboard %s'), $this->identity()->name) ?></h2>
+		<?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+	</div>
+	<div class="col-sm-2">
+		<div class="title-action">
+			<a href="<?php echo $this->url('admin/users', array('locale' => $this->currentLocale(), 'action' => 'logout')) ?>" class="btn btn-danger">
+				<i class="fa fa-sign-out"></i>
+				<span><?php echo $this->translate('Exit') ?></span>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">
+	<?php echo $this->pages()->getCategories()->fetchAll(); ?>
+</div>
+<script type="text/javascript" src="<?php echo $this->basePath('admin.js') ?>"></script>

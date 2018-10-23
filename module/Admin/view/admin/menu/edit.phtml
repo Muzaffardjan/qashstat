@@ -1,0 +1,632 @@
+<?php $this->headTitle()->append($this->translate('Edit menu'))->append($this->translate('Menu manager')) ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Edit menu') ?></h2>
+        <?php
+            /*$this->plugin('navigation')->setContainer($this->navigation()->getContainer());*/
+
+            echo $this->navigation('Zend\Navigation\Admin')
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <?php 
+        $this->form
+        ->setAttribute('action', $this->url('admin/menu', array('locale' => $this->currentLocale(), 'action' => 'edit', 'menu' => $this->menu->id)))
+        ->prepare();
+
+        echo $this->form()->openTag($this->form);
+    ?>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5><?php echo $this->translate('Menu properties'); ?></h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-group">
+                        <?php echo $this->formLabel($this->form->get('name')) ?>
+                        <?php 
+                            echo $this->formText
+                            (
+                                $this->form->get('name')
+                                ->setAttribute('class', 'form-control')
+                            );
+                        ?>
+                        <?php echo $this->formElementErrors($this->form->get('name')) ?>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $this->formLabel($this->form->get('locale')) ?>
+                        <?php 
+                            echo $this->formSelect
+                            (
+                                $this->form->get('locale')
+                                ->setAttribute('class', 'form-control')
+                            );
+                        ?>
+                        <?php echo $this->formElementErrors($this->form->get('locale')) ?>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $this->formLabel($this->form->get('position')) ?>
+                        <?php 
+                            echo $this->formSelect
+                            (
+                                $this->form->get('position')
+                                ->setAttribute('class', 'form-control')
+                            );
+                        ?>
+                        <?php echo $this->formElementErrors($this->form->get('position')) ?>
+                    </div>
+                </div>
+            </div>
+        </div>   
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5><?php echo $this->translate('Menu structure'); ?></h5>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <?php 
+                            echo $this->formElement
+                            (
+                                $this->form->get('structure')
+                                ->setAttribute('type', 'hidden')
+                                ->setAttribute('id', 'structure')
+                            );
+                        ?>
+                    </div>
+                    <div id="trash" class="dd">
+                        <ol class="dd-list">
+                            <li class="dd-item trash">
+                                <div class="dd-handle trash"><?php echo $this->translate('Trash') ?></div>
+                            </li>
+                        </ol>
+                    </div>
+                    <div id="menu-structure" class="dd">
+                        <ol class="dd-list">
+                            <?php echo $this->partial('admin/menu/partial-menu-elements', array('container' => $this->menu->getConfig())) ?>
+                        </ol>
+                    </div>
+                    <div>
+                        <button id="add-element" type="button" class="btn btn-primary">
+                            <i class="fa fa-plus"></i>
+                            <span><?php echo $this->translate('Add element') ?></span>
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-check"></i>
+                            <span><?php echo $this->translate('Save') ?></span>
+                        </button>
+                        <a href="<?php echo $this->url('admin/menu', array('locale' => $this->currentLocale())) ?>" class="btn btn-warning">
+                            <i class="fa fa-times"></i>
+                            <span><?php echo $this->translate('Cancel') ?></span>
+                        </a>
+                    </div>
+                    <?php echo $this->formElementErrors($this->form->get('structure')) ?>
+                </div>
+            </div>
+        </div>     
+    </div>
+    <?php echo $this->form()->closeTag() ?>
+</div>
+<script>
+    $(window).ready(function(){
+        var modals = {
+            add: $(""+
+                "<div class='modal inmodal' id='element-add-modal' tabindex='-1' role='dialog' aria-hidden='true'>"+
+                    '<div class="modal-dialog">'+
+                    '<div class="modal-content animated bounceInRight">'+
+                            '<div class="modal-header">'+
+                                '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>'+
+                                '<i class="fa fa-sitemap modal-icon"></i>'+
+                                "<h4 class='modal-title'><?php echo $this->escapeHtmlAttr($this->translate('Add menu element')) ?></h4>"+
+                            '</div>'+
+                            '<div class="modal-body">'+
+                                '<ul class="list-group">'+
+                                    '<li class="list-group-item">'+
+                                        "<button id='container-element' class='btn btn-white' style='width:100%;text-align:left;''><i class='fa fa-plus-square-o fa-fw'></i>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate('Add container element') ?></button>"+
+                                    '</li>'+
+                                    '<li class="list-group-item">'+
+                                        "<button id='news-category-element' class='btn btn-white' style='width:100%;text-align:left;'><i class='fa fa-list fa-fw'></i>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate('Add news category element') ?></button>"+
+                                    '</li>'+
+                                    '<li class="list-group-item">'+
+                                        "<button id='page-element' class='btn btn-white' style='width:100%;text-align:left;'><i class='fa fa-paste fa-fw'></i>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate('Add page element') ?></button>"+
+                                    '</li>'+
+                                    '<li class="list-group-item">'+
+                                        "<button id='event-element' class='btn btn-white' style='width:100%;text-align:left;'><i class='fa fa-calendar-o fa-fw'></i>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate('Add event element') ?></button>"+
+                                    '</li>'+
+                                    '<li class="list-group-item">'+
+                                        "<button id='link-element' class='btn btn-white' style='width:100%;text-align:left;'><i class='fa fa-link fa-fw'></i>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate('Add link element') ?></button>"+
+                                    '</li>'+
+                                    '<li class="list-group-item">'+
+                                        "<button id='module-element' class='btn btn-white' style='width:100%;text-align:left;'><i class='fa fa-plug fa-fw'></i>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->translate('Add modules element') ?></button>"+
+                                    '</li>'+
+                                '</ul>'+
+                            '</div>'+
+                            '<div class="modal-footer">'+
+                                "<button type='button' class='btn btn-white' data-dismiss='modal'><?php echo $this->escapeHtmlAttr($this->translate('Close')) ?></button>"+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'
+            ),
+            categories: $(''+
+                '<div class="modal inmodal" id="category-add-modal" tabindex="-1" role="dialog" aria-hidden="true">'+
+                    '<div class="modal-dialog">'+
+                    '<div class="modal-content animated bounceInRight">'+
+                            '<div class="modal-header">'+
+                                '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>'+
+                                '<i class="fa fa-list modal-icon"></i>'+
+                                '<h4 class="modal-title"><?php echo $this->escapeHtmlAttr($this->translate('Add news category')) ?></h4>'+
+                            '</div>'+
+                            '<div class="modal-body">'+
+                                '<div class="form-group">'+
+                                    '<label><?php echo str_replace("'", "\'", $this->translate('Select language')) ?>:</label>'+
+                                    '<select id="category-add-modal-locale" class="form-control">'+
+                                        <?php foreach($this->locales as $iso => $locale): ?>
+                                            '<option value="<?php echo $iso ?>"><?php echo str_replace("'", "\'", $locale) ?></option>'+
+                                        <?php endforeach; ?>
+                                    '</select>'+
+                                '</div>'+
+                                '<div class="modal-body-inner">'+
+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="modal-footer">'+
+                                '<button type="button" class="btn btn-white" data-dismiss="modal"><?php echo $this->escapeHtmlAttr($this->translate('Close')) ?></button>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'
+            ),
+            pages: $(''+
+                '<div class="modal inmodal" id="page-add-modal" tabindex="-1" role="dialog" aria-hidden="true">'+
+                    '<div class="modal-dialog">'+
+                    '<div class="modal-content animated bounceInRight">'+
+                            '<div class="modal-header">'+
+                                '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>'+
+                                '<i class="fa fa-paste modal-icon"></i>'+
+                                '<h4 class="modal-title"><?php echo $this->escapeHtmlAttr($this->translate('Add page')) ?></h4>'+
+                            '</div>'+
+                            '<div class="modal-body">'+
+                                '<div class="form-group">'+
+                                    '<label><?php echo str_replace("'", "\'", $this->translate('Select language')) ?>:</label>'+
+                                    '<select id="page-add-modal-locale" class="form-control">'+
+                                        <?php foreach($this->locales as $iso => $locale): ?>
+                                            '<option value="<?php echo $iso ?>"><?php echo str_replace("'", "\'", $locale) ?></option>'+
+                                        <?php endforeach; ?>
+                                    '</select>'+
+                                '</div>'+
+                                '<div class="form-group">'+
+                                    '<label><?php echo str_replace("'", "\'", $this->translate('Enter query')) ?>:</label>'+
+                                    '<div class="input-group">'+
+                                        '<input id="page-add-modal-query" type="text" class="form-control">'+
+                                        '<div class="input-group-btn">'+
+                                            '<button id="page-add-modal-filter" type="button" class="btn btn-white">'+
+                                                '<i class="fa fa-filter"></i>'+
+                                            '</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="modal-body-inner">'+
+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="modal-footer">'+
+                                '<button type="button" class="btn btn-white" data-dismiss="modal"><?php echo $this->escapeHtmlAttr($this->translate('Close')) ?></button>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'
+            ),
+            events: $(''+
+                '<div class="modal inmodal" id="event-add-modal" tabindex="-1" role="dialog" aria-hidden="true">'+
+                    '<div class="modal-dialog">'+
+                    '<div class="modal-content animated bounceInRight">'+
+                            '<div class="modal-header">'+
+                                '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>'+
+                                '<i class="fa fa-calendar-o modal-icon"></i>'+
+                                '<h4 class="modal-title"><?php echo $this->escapeHtmlAttr($this->translate('Add event')) ?></h4>'+
+                            '</div>'+
+                            '<div class="modal-body">'+
+                                '<div class="form-group">'+
+                                    '<label><?php echo str_replace("'", "\'", $this->translate('Select language')) ?>:</label>'+
+                                    '<select id="event-add-modal-locale" class="form-control">'+
+                                        <?php foreach($this->locales as $iso => $locale): ?>
+                                            '<option value="<?php echo $iso ?>"><?php echo str_replace("'", "\'", $locale) ?></option>'+
+                                        <?php endforeach; ?>
+                                    '</select>'+
+                                '</div>'+
+                                '<div class="form-group">'+
+                                    '<label><?php echo str_replace("'", "\'", $this->translate('Enter query')) ?>:</label>'+
+                                    '<div class="input-group">'+
+                                        '<input id="event-add-modal-query" type="text" class="form-control">'+
+                                        '<div class="input-group-btn">'+
+                                            '<button id="event-add-modal-filter" type="button" class="btn btn-white">'+
+                                                '<i class="fa fa-filter"></i>'+
+                                            '</button>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="modal-body-inner">'+
+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="modal-footer">'+
+                                '<button type="button" class="btn btn-white" data-dismiss="modal"><?php echo $this->escapeHtmlAttr($this->translate('Close')) ?></button>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'
+            ),
+            link: $(''+
+                '<div class="modal inmodal" id="link-add-modal" tabindex="-1" role="dialog" aria-hidden="true">'+
+                    '<div class="modal-dialog">'+
+                    '<div class="modal-content animated bounceInRight">'+
+                            '<div class="modal-header">'+
+                                '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>'+
+                                '<i class="fa fa-link modal-icon"></i>'+
+                                '<h4 class="modal-title"><?php echo $this->escapeHtmlAttr($this->translate('Add link')) ?></h4>'+
+                            '</div>'+
+                            '<div class="modal-body">'+
+                                '<div class="form-group">'+
+                                    '<label><?php echo $this->escapeHtmlAttr($this->translate('Title')) ?>:</label>'+
+                                    '<input id="link-add-modal-title" type="text" class="form-control">'+
+                                '</div>'+
+                                '<div class="form-group">'+
+                                    '<label><?php echo $this->escapeHtmlAttr($this->translate('Link')) ?>:</label>'+
+                                    '<input id="link-add-modal-link" type="text" class="form-control">'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="modal-footer">'+
+                                '<button id="link-add-modal-add" type="button" class="btn btn-info"><?php echo $this->escapeHtmlAttr($this->translate('Add')) ?></button>'+
+                                '<button type="button" class="btn btn-white" data-dismiss="modal"><?php echo $this->escapeHtmlAttr($this->translate('Close')) ?></button>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'
+            ),
+            modules: $(''+
+                '<div class="modal inmodal" id="modules-add-modal" tabindex="-1" role="dialog" aria-hidden="true">'+
+                    '<div class="modal-dialog">'+
+                    '<div class="modal-content animated bounceInRight">'+
+                            '<div class="modal-header">'+
+                                '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>'+
+                                '<i class="fa fa-plug modal-icon"></i>'+
+                                '<h4 class="modal-title"><?php echo $this->escapeHtmlAttr($this->translate('Add modules')) ?></h4>'+
+                            '</div>'+
+                            '<div class="modal-body">'+
+                                '<ul class="list-group">'+
+                                    <?php foreach($this->modules as $module): ?>
+                                        '<li class="list-group-item module-list" style="padding:15px 8px;">'+
+                                            '<i class="fa fa-plus"></i>&nbsp;&nbsp;'+
+                                            '<span><?php echo str_replace("'", "\'", $module['label']) ?></span>'+
+                                            '<span class="hidden data"><?php echo $this->json($module) ?></span>'+
+                                        '</li>'+
+                                    <?php endforeach; ?>
+                                '</ul>'+
+                            '</div>'+
+                            '<div class="modal-footer">'+
+                                '<button type="button" class="btn btn-white" data-dismiss="modal"><?php echo $this->escapeHtmlAttr($this->translate('Close')) ?></button>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'
+            )
+        };
+
+        var list = {
+            element: $('#menu-structure'),
+            //instance: $('#menu-structure').nestable(),
+            parentTemplate: '<ol class="dd-list"></ol>',
+            elementTemplate: ''+ 
+                '<li class="dd-item">'+
+                    '<div class="dd-handle">'+
+                        '<span class="label label-info"><i class="%icon fa-fw" style="font-size:1.2em;"></i></span>'+
+                        '<span>%title</span>'+
+                    '</div>'+
+                '</li>',
+            addElement: function(title, icon, data, append){
+                if(!this.count)
+                {
+                    this.count = 1;
+                }
+
+                var li = $(this.elementTemplate.replace('%id', this.count).replace('%title', title).replace('%icon', icon));
+                this.count++; 
+
+                li.data(data);
+                li.attr('data-id', this.count);
+
+                if(!append)
+                {
+                    if(!this.element.find('.dd-list').length || !this.element.find('.dd-item').length)
+                    {
+                        this.element.html(this.parentTemplate);
+                    }
+
+                    this.element.children('.dd-list').append(li);
+                }
+                else
+                {
+                    append.append(li);
+                }
+
+                //this.instance = this.element.nestable();
+                modals.add.modal('hide');
+            },
+        };
+
+        for(var key in modals) {
+            modals[key].on('hidden.bs.modal', function(){
+                this.remove();
+            });
+        }
+
+        $('#add-element').click(function(){
+            $('body').append(modals.add);
+            modals.add.modal('show');
+        });
+
+        $('body').on('click', '#container-element', function(){
+            var title = prompt('<?php echo str_replace("'", "\'", $this->translate('Enter title of an element')) ?>');
+            
+            if(!title.trim()) {
+                return;
+            }
+
+            list.addElement(title.trim(), 'fa fa-plus-square-o', {label: title.replace('"', "'"), uri: '#'});
+        });
+
+        $('body').on('click', '#news-category-element', function(){
+            modals.add.modal('hide');
+
+            $('body').append(modals.categories);
+            modals.categories.modal('show');
+
+            $('#category-add-modal-locale').trigger('change');
+        });
+
+        $('body').on('change', '#category-add-modal-locale', function() {
+            var body = modals.categories.find('.modal-body-inner');
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'fetch', 'action' => 'categories')) ?>',
+                data: {
+                    locale: $('#category-add-modal-locale').val(),
+                },
+                beforeSend: function(){
+                    body.html('<div class="alert alert-info"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>');
+                },
+                success: function(response){
+                    if(typeof response != 'object' || !response.length)
+                    {
+                        body.html('<div class="alert alert-info"><span><?php echo str_replace("'", "\'", $this->translate('Nothing found')) ?></span></div>');
+                        return;
+                    }
+
+                    body.html('<ul class="list-group"></ul>');
+                    var ul = body.children('ul');
+
+                    for(var i=0; i<response.length; i++)
+                    {
+                        var li = $('<li class="list-group-item" style="padding:10px 8px;cursor:pointer;"><i class="fa fa-plus fa-fw"></i>&nbsp;&nbsp;<span class="title">'+response[i].label+'</span></li>');
+                        li.data(response[i]);
+                        ul.append(li);
+
+                        li.click(function(){
+                            var title = prompt('<?php echo str_replace("'", "\'", $this->translate('Enter title of an element')) ?>', $(this).children('.title').text().trim());
+            
+                            if(!title.trim())
+                            {
+                                return;
+                            }
+
+                            var data = $(this).data();
+                            data.label = title.trim();
+
+                            list.addElement(title.trim(), 'fa fa-list', data);
+                            modals.categories.modal('hide');
+                        });
+                    }
+                },
+            });
+        });
+
+        $('body').on('click', '#page-element', function(){
+            modals.add.modal('hide');
+
+            $('body').append(modals.pages);
+            modals.pages.modal('show');
+        });
+
+        $('body').on('click', '#page-add-modal-filter', function(){
+            var body = modals.pages.find('.modal-body-inner');
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'fetch', 'action' => 'pages')) ?>',
+                data: {
+                    locale: $('#page-add-modal-locale').val(),
+                    query: $('#page-add-modal-query').val(),
+                },
+                beforeSend: function(){
+                    body.html('<div class="alert alert-info"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>');
+                },
+                success: function(response){
+                    if(typeof response != 'object' || !response.length)
+                    {
+                        body.html('<div class="alert alert-info"><span><?php echo str_replace("'", "\'", $this->translate('Nothing found')) ?></span></div>');
+                        return;
+                    }
+
+                    body.html('<ul class="list-group"></ul>');
+                    var ul = body.children('ul');
+
+                    for(var i=0; i<response.length; i++)
+                    {
+                        var li = $('<li class="list-group-item" style="padding:10px 8px;cursor:pointer;"><i class="fa fa-plus fa-fw"></i>&nbsp;&nbsp;<span class="title">'+response[i].label+'</span></li>');
+                        li.data(response[i]);
+                        ul.append(li);
+
+                        li.click(function(){
+                            var title = prompt('<?php echo str_replace("'", "\'", $this->translate('Enter title of an element')) ?>', $(this).children('.title').text().trim());
+            
+                            if(!title.trim())
+                            {
+                                return;
+                            }
+
+                            var data = $(this).data();
+                            data.label = title.trim();
+
+                            list.addElement(title.trim(), 'fa fa-paste', data);
+                            modals.pages.modal('hide');
+                        });
+                    }
+                },
+            });
+        });
+
+        $('body').on('click', '#event-element', function(){
+            modals.add.modal('hide');
+
+            $('body').append(modals.events);
+            modals.events.modal('show');
+        });
+
+        $('body').on('click', '#event-add-modal-filter', function(){
+            var body = modals.events.find('.modal-body-inner');
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'fetch', 'action' => 'events')) ?>',
+                data: {
+                    locale: $('#event-add-modal-locale').val(),
+                    query: $('#event-add-modal-query').val(),
+                },
+                beforeSend: function(){
+                    body.html('<div class="alert alert-info"><i class="fa fa-circle-o-notch fa-spin fa-2x"></i></div>');
+                },
+                success: function(response){
+                    if(typeof response != 'object' || !response.length)
+                    {
+                        body.html('<div class="alert alert-info"><span><?php echo str_replace("'", "\'", $this->translate('Nothing found')) ?></span></div>');
+                        return;
+                    }
+
+                    body.html('<ul class="list-group"></ul>');
+                    var ul = body.children('ul');
+
+                    for(var i=0; i<response.length; i++)
+                    {
+                        var li = $('<li class="list-group-item" style="padding:10px 8px;cursor:pointer;"><i class="fa fa-plus fa-fw"></i>&nbsp;&nbsp;<span class="title">'+response[i].label+'</span></li>');
+                        li.data(response[i]);
+                        ul.append(li);
+
+                        li.click(function(){
+                            var title = prompt('<?php echo str_replace("'", "\'", $this->translate('Enter title of an element')) ?>', $(this).children('.title').text().trim());
+            
+                            if(!title.trim())
+                            {
+                                return;
+                            }
+
+                            var data = $(this).data();
+                            data.label = title.trim();
+
+                            list.addElement(title.trim(), 'fa fa-calendar-o', data);
+                            modals.events.modal('hide');
+                        });
+                    }
+                },
+            });
+        });
+
+        $('body').on('click', '#link-element', function(){
+            modals.add.modal('hide');
+            $('body').append(modals.link);
+            modals.link.modal('show');
+        });
+
+        $('body').on('click', '#link-add-modal-add', function(){
+            var label = $('#link-add-modal-title').val().trim();
+            var uri = $('#link-add-modal-link').val().trim();
+
+            if(!label || !uri)
+            {
+                alert('<?php echo str_replace("'", "\'", $this->translate('Fill all inputs please')) ?>!');
+                return;
+            }
+
+            list.addElement(label.trim(), 'fa fa-link', {label: label, uri: uri});
+            modals.link.modal('hide');
+        });
+
+        $('body').on('click', '#module-element', function(){
+            modals.add.modal('hide');
+            $('body').append(modals.modules);
+            modals.modules.modal('show');
+        });
+
+        $('body').on('click', '.module-list', function() {
+            var data = JSON.parse($(this).children('.data').text());
+
+            var title = prompt('<?php echo str_replace("'", "\'", $this->translate('Enter title of an element')) ?>', data.label);
+            
+            if(!title.trim()) {
+                return;
+            }
+
+            data.label = title;
+
+            list.addElement(title, 'fa fa-plug', data);
+            modals.modules.modal('hide');
+        });
+    
+        $('#menu-form').submit(function(e){
+            var object;
+            $('#structure').val(JSON.stringify($('#menu-structure').nestable('serialize')));
+
+            //e.preventDefault();
+            //$('#structure').val();
+        });
+
+        $('#menu-structure').nestable();
+    });
+</script>
+<?php 
+    $this->headStyle()
+    ->appendStyle("
+        .list-group-item {
+            padding:5px;
+        }
+        .dd-handle > *
+        {
+            vertical-align: middle; 
+        }
+    ");
+
+    $this->inlineScript()
+    ->appendFile($this->basePath('dist/plugins/nestable/jquery.nestable.js'))
+    ->appendScript("
+        $('#menu-structure').nestable({group: 1});
+
+        $('#trash').nestable({group: 1}).on('change', function(){
+            $('#trash').find('li.dd-item').remove();
+
+            $('#trash').html(''+
+                '<ol class=\"dd-list\"><li class=\"dd-item trash\"><div class=\"dd-handle trash\">".$this->escapeHtmlAttr($this->translate('Trash'))."</div></li></ol>');
+        });
+
+        $('#menu-structure').find('span.data').each(function(){
+            $(this).parents('.dd-item').data(JSON.parse($(this).text()));
+        });
+    ");
+?>

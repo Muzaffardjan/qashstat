@@ -1,0 +1,31 @@
+<?php  
+use Zend\Navigation\Page\Mvc;
+?>
+<?php foreach ($this->container as $page): ?>
+	<?php  
+		if($page instanceof Mvc)
+		{
+			$params = $page->getParams();
+
+			if(!isset($params['locale']) || $params['locale'])
+			{
+				// Set locale
+				$params['locale'] = $this->currentLocale();
+
+				$page->setParams($params);
+			}
+		}
+	?>
+
+	<li <?php echo $page->isActive()? 'class="active"': '' ?>>
+		<a href="<?php echo $page->getHref() == '#'?'javascript:void(0);':$page->getHref() ?>">
+			<span><?php echo $page->getLabel() ?></span>
+		</a>
+
+		<?php if ($page->hasPages() || $page->hasChildren()): ?>
+			<ul>
+				<?php echo $this->partial('application/front/partial/top-menu', array('container' => $page, 'tab' => $this->tab . "\n")) ?>
+			</ul>
+		<?php endif; ?>
+	</li>
+<?php endforeach ?>

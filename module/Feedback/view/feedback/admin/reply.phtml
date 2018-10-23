@@ -1,0 +1,104 @@
+<?php $this->headTitle()->append($this->translate('Feedback')) ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Feedback') ?></h2>
+        <?php
+            echo $this->navigation('Zend\Navigation\Admin')
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mail-box-header">
+                <div class="mail-tools">
+                    <h3>
+                        <span class="font-noraml"><?php echo $this->translate('Subject') ?>: </span>
+                        <span><?php echo ucfirst($this->feedback->subject) ?></span>
+                    </h3>
+                    <h5>
+                        <span class="pull-right font-noraml">
+                            <?php  
+                                echo $this->dateFormat(
+                                    (int) $this->feedback->time,
+                                    IntlDateFormatter::LONG, // date
+                                    IntlDateFormatter::SHORT, // time
+                                    $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+                                );
+                            ?>
+                        </span>
+                        <span class="font-noraml"><?php echo $this->translate('From') ?>: </span>
+                        <span><?php echo $this->feedback->email ?></span>
+                    </h5>
+                </div>
+            </div>
+            <div class="mail-box">
+                <div class="mail-body">
+                    <?php echo str_replace(array("\t", "\r\n"), array("&nbsp;&nbsp;", "<br>"), $this->feedback->text) ?>
+                </div>
+                <div class="mail-body">
+                    <h2><?php echo $this->translate('Reply') ?></h2>
+                    <?php  
+                        $this->form
+                        ->setAttribute(
+                            'action', 
+                            $this->url
+                            (
+                                'admin/feedback', 
+                                array(
+                                    'locale' => $this->currentLocale(), 
+                                    'action' => 'reply',
+                                    'id'     => $this->feedback->id,
+                                )
+                            )
+                        )
+                        ->prepare();
+
+                        echo $this->form()->openTag($this->form);
+                    ?>
+                        <div class="form-group <?php if($this->form->get('subject')->getMessages()) echo 'has-error' ?>">
+                            <?php echo $this->formLabel($this->form->get('subject')) ?>
+                            <?php 
+                                echo $this->formText
+                                (
+                                    $this->form
+                                    ->get('subject')
+                                    ->setAttribute('class', 'form-control')
+                                    ->setAttribute('autofocus', 'true')
+                                )
+                            ?>
+                            <?php echo $this->formElementErrors($this->form->get('subject')) ?>
+                        </div>
+                        <div class="form-group <?php if($this->form->get('text')->getMessages()) echo 'has-error' ?>">
+                            <?php echo $this->formLabel($this->form->get('text')) ?>
+                            <?php 
+                                echo $this->formTextarea
+                                (
+                                    $this->form
+                                    ->get('text')
+                                    ->setAttribute('class', 'form-control')
+                                    ->setAttribute('autofocus', 'true')
+                                )
+                            ?>
+                            <?php echo $this->formElementErrors($this->form->get('text')) ?>
+                        </div>
+                        <a href="<?php echo $this->url('admin/feedback', array('locale' => $this->currentLocale())) ?>" class="btn btn-sm btn-white" style="vertical-align: middle;">
+                            <i class="fa fa-arrow-left fa-fw"></i>
+                            <span><?php echo $this->translate('Back') ?></span>
+                        </a>
+                        <button class="btn btn-sm btn-success" type="submit">
+                            <i class="fa fa-send fa-fw"></i>
+                            <span><?php echo $this->translate('Send') ?></span>
+                        </button>
+                    <?php echo $this->form()->closeTag() ?>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

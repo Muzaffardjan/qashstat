@@ -1,0 +1,42 @@
+<?php
+use Zend\Navigation\Page\Mvc;
+
+foreach ($this->container as $page) :
+    if($page instanceof Mvc) {
+        $params = $page->getParams();
+
+        if(!isset($params['locale']) || $params['locale']) {
+            $params['locale'] = $this->currentLocale();
+            $page->setParams($params);
+        }
+    }
+?>
+    <?php if($page->hasPages() || $page->hasChildren()) : ?>
+        <li class="has-submenu">
+            <a href="javascript:void(0);">
+                <?php echo $page->getLabel(); ?>
+                <span class="caret"></span>
+            </a>
+
+            <ul class="submenu">
+                <?php foreach($page as $subpage) : ?>
+                    <li>
+                        <a href="<?php
+                            echo ($subpage->getHref() == '#') ? 
+                                'javascript:void(0);' : 
+                                $subpage->getHref();
+                        ?>">
+                            <?php echo $subpage->getLabel(); ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </li>
+    <?php else : ?>
+        <li>
+            <a href="<?php echo $page->getHref(); ?>">
+                <?php echo $page->getLabel(); ?>
+            </a>
+        </li>
+    <?php endif; ?>
+<?php endforeach; ?>

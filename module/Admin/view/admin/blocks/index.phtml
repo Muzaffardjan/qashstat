@@ -1,0 +1,127 @@
+<?php
+/**
+ * Qashqadaryo viloyat statistika boshqarmasi.
+ *
+ * @author    Muzaffardjan Karaev
+ * @copyright Copyright (c) "FOR EACH SOFT" LTD 2015 (http://www.each.uz)
+ * @license   "FOR EACH SOFT" LTD PUBLIC LICENSE
+ * Created:   12.07.2017
+ */
+$this->headTitle()
+    ->append($this->translate('Blocks config'));
+$this->headLink()
+    ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.responsive.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.custom.css'));
+?>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Blocks config') ?></h2>
+
+        <?php
+            echo $this->navigation('Zend\Navigation\Admin')
+                ->breadcrumbs()
+                ->setMinDepth(0)
+                ->setMaxDepth(4)
+                ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <?php if ($this->blocks) : ?>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5><?php echo $this->translate('Blocks') ?></h5>
+
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-down"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content table-responsive">
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th><?php echo $this->translate('Name') ?></th>
+                                    <th><?php echo $this->translate('Description') ?></th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php $order = 1; foreach ($this->blocks as $id => $block) : ?>
+                                    <tr>
+                                        <th><?php echo $order ?></th>
+                                        <th><?php echo $this->translate($block['name']) ?></th>
+                                        <th><?php echo $this->translate($block['description']) ?></th>
+                                        <th>
+                                            <div class="input-group pull-right" style="color:#202020;">
+                                                <select id="" class="form-control">
+                                                    <?php foreach($this->locales as $iso => $locale): ?>
+                                                        <option <?php if($this->currentLocale() == $iso) echo 'selected=""' ?> value="<?php echo $iso ?>">
+                                                            <?php echo $locale ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+
+                                                <div class="input-group-btn">
+                                                    <button data-id="<?php echo $id ?>" class="btn btn-white config-block" data-toggle="tooltip" data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Config')) ?>">
+                                                        <i class="fa fa-wrench"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                <?php $order++; endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="middle-box text-center alert alert-info">
+            <h3 class="font-bold"><?php echo $this->translate('Blocks config is empty') ?></h3>
+            <div class="error-desc"></div>
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php
+$url = $this->url(
+    'application/default',
+    [
+        'locale' => $this->currentLocale(),
+        'controller' => 'jsPlugins',
+        'action' => 'datatablesI18n',
+    ]
+);
+
+$this->inlineScript()
+    ->appendFile($this->basePath('dist/plugins/dataTables/jquery.dataTables.js'))
+    ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.js'))
+    ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.responsive.js'))
+    ->appendFile($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.js'))
+    ->appendScript("
+        $('.datatable').dataTable({
+            'responsive': true,
+            'language': {
+                'url': '" . $url . "'
+            }
+        });
+
+        $('*[data-toggle=\"tooltip\"]').tooltip();
+
+        $('.config-block').click(function(){
+            location.href = '".$this->url('admin/blocks', ['locale' => $this->currentLocale(), 'action' => 'edit'])."/'+$(this).attr('data-id')+'/'+$(this).parents('.input-group').find('select').val();
+        });
+    ");
+?>

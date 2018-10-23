@@ -1,0 +1,116 @@
+<?php $this->headTitle()->append($this->translate('Feedback')) ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Feedback') ?></h2>
+        <?php
+			echo $this->navigation('Zend\Navigation\Admin')
+			          ->breadcrumbs()
+			          ->setMinDepth(0)               
+			          ->setMaxDepth(4)         
+			          ->setPartial('partial/admin-breadcrumbs');
+		?>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<?php if($this->feedbacks): ?>
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Feedback') ?></h5>
+					<div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+				</div>
+				<div class="ibox-content table-responsive">
+					<table class="table datatable">
+						<thead>
+							<th>#</th>
+							<th><?php echo $this->translate('Full name'); ?></th>
+							<th><?php echo $this->translate('Phone'); ?></th>
+							<th><?php echo $this->translate('Email'); ?></th>
+							<th><?php echo $this->translate('Subject'); ?></th>
+							<th><?php echo $this->translate('Status'); ?></th>
+							<th><?php echo $this->translate('Date'); ?></th>
+						</thead>
+						<tbody>
+							<?php $order = 1; foreach($this->feedbacks as $feedback): ?>
+								<tr>
+									<td><?php echo $order ?></td>
+									<td><a href="<?php echo $this->url('admin/feedback', array('locale' => $this->currentLocale(), 'controller' => 'admin', 'action' => 'read', 'id' => $feedback->id)); ?>"><?php echo $feedback->name; ?></a></td>
+									<td><?php echo $feedback->phone ?></td>
+									<td><?php echo $feedback->email; ?></td>
+									<td><?php echo $feedback->subject; ?></td>
+									<td>
+									<?php if($feedback->checked) : ?>
+										<span class="label label-info"><?php echo $this->translate('Checked');?></span>
+									<?php else : ?>
+										<span class="label label-danger"><?php echo $this->translate('Waiting'); ?></span>
+									<?php endif; ?>
+									</td>
+									<td>
+										<i class="fa fa-calendar-o"></i>
+										<span>
+											<?php  
+				                                echo $this->dateFormat(
+				                                    (int) $feedback->time,
+				                                    IntlDateFormatter::MEDIUM, // date
+				                                    IntlDateFormatter::SHORT, // time
+				                                    $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+				                                );
+				                            ?>
+										</span>
+									</td>
+								</tr>
+							<?php $order++; endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<?php else: ?>
+				<div class="middle-box text-center alert alert-success">
+					<p>
+						<i class="fa fa-reply fa-3x"></i>
+					</p>
+			        <h3 class="font-bold"><?php echo $this->translate('There isn\'t any feedbacks') ?></h3>
+			    </div>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="js/plugins/dataTables/dataTables.responsive.js"></script>
+<script src="js/plugins/dataTables/dataTables.tableTools.min.js"></script>
+<?php  
+	$this->headStyle()
+	->appendStyle("
+		.white--space-nowrap
+		{
+			white-space: nowrap;
+		}
+	");
+
+	$this->headLink()
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.bootstrap.css'))
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.responsive.css'))
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.tableTools.min.css'))
+	->appendStylesheet($this->basePath('css/plugins/dataTables/dataTables.custom.css'));
+
+	$this->inlineScript()
+	->appendFile($this->basePath('js/plugins/dataTables/jquery.dataTables.js'))
+	->appendFile($this->basePath('js/plugins/dataTables/dataTables.bootstrap.js'))
+	->appendFile($this->basePath('js/plugins/dataTables/dataTables.responsive.js'))
+	->appendFile($this->basePath('js/plugins/dataTables/dataTables.tableTools.min.js'))
+	->appendScript("
+		$('.datatable').dataTable({
+            'responsive': true,
+            'language': {
+                'url': '".$this->url('application/default', array('locale' => $this->currentLocale(), 'controller' => 'jsPlugins', 'action' => 'datatablesI18n'))."'
+            }
+        });
+		$('*[data-toggle=\"tooltip\"]').tooltip();
+	");
+?>

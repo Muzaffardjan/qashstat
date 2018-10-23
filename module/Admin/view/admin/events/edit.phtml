@@ -1,0 +1,325 @@
+<?php $this->headTitle()->append($this->translate('Edit event'))->append($this->translate('Events')); ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-8">
+        <h2><?php echo $this->translate('Add new event') ?></h2>
+        <?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5><?php echo $this->translate('Event properties') ?></h5>
+                </div>
+                <div class="ibox-content">
+                    <?php  
+                        $form = $this->form;
+
+                        $form->setAttribute(
+                            'action',
+                            $this->url(
+                                'admin/events',
+                                [
+                                    'locale' => $this->currentLocale(),
+                                    'action' => 'edit',
+                                    'page' => $this->event->url
+                                ]
+                            )
+                        );
+                        $form->prepare();
+
+                        $formLabel = $this->plugin('formLabel');
+
+                        echo $this->form()->openTag($form);
+                    ?>
+                        <?php if($this->errors): ?>
+                            <div class="alert alert-danger">
+                                <?php foreach($this->errors as $error): ?>
+                                    <b><?php echo $this->translate($error) ?></b>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                        <div class="form-group<?php if($form->get('locale')->getMessages()) echo ' has-error' ?>">
+                            <?php  
+                                echo $formLabel->openTag();
+                                    echo $this->translate($form->get('locale')->getOption('label'));
+                                    echo '<span style="color:red;">*</span>';
+                                echo $formLabel->closeTag(); 
+                            ?>
+                            <?php 
+                                echo $this->formSelect(
+                                    $form->get('locale')
+                                    ->setAttribute('class', 'form-control')
+                                    ->setAttribute('id', 'locale-select')
+                                ) 
+                            ?>
+                            <?php echo $this->formElementErrors($form->get('locale')) ?>
+                        </div>
+                        <div class="alternatives-block" style="display: none;">
+                            <p><b><?php echo $this->translate('Alternatives') ?>:</b></p>
+                            <?php foreach($this->locales as $iso => $title): ?>
+                                <div style="padding-left: 15px;display: none;" class="form-group<?php if($form->get($iso)->getMessages()) echo ' has-error' ?>">
+                                    <?php  
+                                        echo $this->formLabel($form->get($iso));
+                                    ?>
+                                    <?php 
+                                        echo $this->formSelect(
+                                            $form->get($iso)
+                                            ->setAttribute('class', 'form-control chosen-select alternatives-select '.$iso)
+                                        ) 
+                                    ?>
+                                    <?php echo $this->formElementErrors($form->get($iso)) ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="form-group<?php if($form->get('title')->getMessages()) echo ' has-error' ?>">
+                            <?php  
+                                echo $formLabel->openTag();
+                                    echo $this->translate($form->get('title')->getOption('label'));
+                                    echo '<span style="color:red;">*</span>';
+                                echo $formLabel->closeTag(); 
+                            ?>
+                            <?php 
+                                echo $this->formText(
+                                    $form->get('title')
+                                    ->setAttribute('class', 'form-control')
+                                ) 
+                            ?>
+                            <?php echo $this->formElementErrors($form->get('title')) ?>
+                        </div>
+                        <div class="form-group<?php if($form->get('happens')->getMessages()) echo ' has-error' ?>">
+                            <?php echo $this->formLabel($form->get('happens')) ?>
+                            <div class='input-group date' id='happens-outer'>
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar-o"></span>
+                                    <span><?php echo $this->translate('Change me!') ?></span>
+                                </span>
+                                <?php 
+                                    echo $this->formText(
+                                        $form->get('happens')
+                                        ->setAttribute('class', 'form-control')
+                                    ) 
+                                ?>
+                            </div>
+                            <?php echo $this->formElementErrors($form->get('happens')) ?>
+                        </div>
+                        <div class="form-group<?php if($form->get('body')->getMessages()) echo ' has-error' ?>">
+                            <?php echo $this->formLabel($form->get('body')) ?>
+                            <?php 
+                                echo $this->formTextarea(
+                                    $form->get('body')
+                                    ->setAttribute('class', 'form-control')
+                                    ->setAttribute('id', 'editor')
+                                ) 
+                            ?>
+                            <?php echo $this->formElementErrors($form->get('body')) ?>
+                        </div>
+                        <div class="clearfix"></div>
+                        <button type="submit" class="btn btn-success">
+                            <span><?php echo $this->translate('Save') ?></span>
+                        </button>
+                        <a href="<?php echo $this->url('admin/events', array('locale' => $this->currentLocale())) ?>" class="btn btn-warning">
+                            <span><?php echo $this->translate('Cancel') ?></span>
+                        </a>
+                    <?php echo $this->form()->closeTag() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php  
+    $this->headLink()
+    ->appendStylesheet($this->basePath('dist/plugins/jsTree/themes/default/style.min.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/summernote/summernote.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/summernote/summernote-bs3.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/codemirror/codemirror.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/codemirror/theme/monokai.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/chosen/chosen.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css'))
+    ->appendStylesheet($this->basePath('dist/plugins/iCheck/custom.css'));
+
+    $this->headStyle()->appendStyle("
+        @media screen and (min-width: 769px) {
+          .modal-lg{
+              width:900px;
+          }
+
+          .modal-sm{
+              width:300px;
+          }
+        }
+
+        .modal #progress, .modal .alert {
+            margin-top: 30px;
+        }
+
+        .modal #progress .progress {
+            margin-bottom: 0px;
+        }
+    ");
+
+    $this->inlineScript()
+        ->appendFile($this->basePath('dist/plugins/jsTree/jstree.min.js'))
+        ->appendFile($this->basePath('dist/plugins/iCheck/icheck.min.js'))
+        ->appendFile($this->basePath('dist/plugins/codemirror/codemirror.js'))
+        ->appendFile($this->basePath('dist/plugins/codemirror/mode/xml/xml.js'))
+        ->appendFile($this->basePath('dist/plugins/codemirror/mode/javascript/javascript.js'))
+        ->appendFile($this->basePath('dist/plugins/codemirror/formatting.js'))
+        ->appendFile($this->basePath('dist/plugins/summernote/summernote.min.js'))
+        ->appendFile($this->basePath('dist/plugins/summernote/buttons/files-explorer.js'))
+        ->appendFile($this->basePath('dist/plugins/summernote/buttons/fetch.js'))
+        ->appendFile($this->basePath('dist/plugins/chosen/chosen.jquery.js'))
+        ->appendFile($this->basePath('dist/plugins/moment/moment.min.js'))
+        ->appendFile($this->basePath('dist/plugins/moment/locales.js'))
+        ->appendFile($this->basePath('dist/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js'))
+        ->appendFile($this->basePath('dist/js/server-files.js'));
+
+    if($this->currentLocale() != 'en-US')
+    {
+        $this->inlineScript()->appendFile($this->basePath('dist/plugins/summernote/locales/'.$this->currentLocale().'.js'));
+    }
+
+    $this->inlineScript()->appendScript("
+        $(window).ready(function(){
+            $('#editor').summernote({
+                height: 500,
+                lang: '".$this->currentLocale()."',
+                fileUploadRoute: '".$this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'files', 'action' => 'upload'))."',
+                toolbar: [
+                    ['timeline', ['undo', 'redo']],
+                    ['style', ['style']],
+                    ['font-style', ['fontname', 'bold', 'italic', 'underline', 'color', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['para', ['ul', 'ol', 'hr', 'paragraph']],
+                    ['table', ['table', 'link', 'fetcher']],
+                    ['height', ['height']],
+                    ['files', ['filesUpload', 'video', 'files']],
+                    ['misc', ['codeview', 'fullscreen', 'help']]
+                ],
+                buttons: {
+                    files: FilesExplorer,
+                    filesUpload: FilesUpload,
+                    fetcher: _SummernoteFetcher,
+                },
+                codemirror: { // codemirror options
+                    theme: 'monokai',
+                    font: 72,
+                    dialogsFade: true  // Add fade effect on dialogs
+                },
+                fetcher: {
+                    route: '".$this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'fetch', 'action' => 'bySearch'))."'
+                }
+            });
+        });
+
+        $.serverFiles.dirsRoute = '" . $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'files', 'action' => 'jsTree')) . "';
+        $.serverFiles.filesRoute = '" . $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'files', 'action' => 'fetch')) . "';
+        $.serverFiles.newFolderRoute = '" . $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'files', 'action' => 'operate')) . "';
+        $.serverFiles.renameRoute = '" . $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'files', 'action' => 'operate')) . "';
+        $.serverFiles.deleteRoute = '" . $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'files', 'action' => 'operate')) . "';
+        $.serverFiles.moveRoute = '" . $this->url('admin/default', array('locale' => $this->currentLocale(), 'controller' => 'files', 'action' => 'operate')) . "';
+        $.serverFiles.locale = {
+            'title': '".$this->escapeHtmlAttr($this->translate('Server files explorer'))."',
+            'close': '".$this->escapeHtmlAttr($this->translate('Close'))."',
+            'loading': '".$this->escapeHtmlAttr($this->translate('Loading...'))."',
+            'renameOnlyOne': '".$this->escapeHtmlAttr($this->translate('You can rename only one file at a time'))."',
+            'newName'   : '".$this->escapeHtmlAttr($this->translate('New name:'))."',
+            'sure'      : '".$this->escapeHtmlAttr($this->translate('Are you sure?'))."',
+            'onlyOneNewFolder': '".$this->escapeHtmlAttr($this->translate('You can create only one folder at a time'))."',
+            'choose'    : '".$this->escapeHtmlAttr($this->translate('Choose'))."',
+            'newFolder' : '".$this->escapeHtmlAttr($this->translate('New folder'))."',
+            'rename'    : '".$this->escapeHtmlAttr($this->translate('Rename'))."',
+            'delete'    : '".$this->escapeHtmlAttr($this->translate('Delete'))."',
+            'refresh'   : '".$this->escapeHtmlAttr($this->translate('Refresh'))."'
+        };
+
+        $('#locale-select').change(function(){
+            var value = $(this).val().trim();
+
+            if(value)
+            {
+                $('.alternatives-block').show();
+
+                $('.alternatives-select')
+                .not('.' + value)
+                .parents('.form-group')
+                .show();
+
+                $('.alternatives-select.'+value)
+                .parents('.form-group')
+                .hide();
+            }
+            else
+            {
+                $('.alternatives-block').hide();
+
+                $('.alternatives-select').each(function(){
+                    $(this).val('');
+                });
+
+                $('.alternatives-select')
+                .parents('.form-group')
+                .hide();
+            }
+        });
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $(document).ready(function () {
+            $('.alternatives-select').chosen({allow_single_deselect:true});
+            $('#locales-select').trigger('change');
+
+            $('#happens-outer').datetimepicker({
+                locale: '".substr($this->currentLocale(), 0, 2)."',
+                format: 'DD.MM.YYYY HH:mm',
+            });
+
+            $('#image-upload').click(function(){
+                $('#summernote-server-upload-btn').click();
+            });
+
+            $('#image-explore').click(function(){
+                var oldTrigger = $.serverFiles.fileAdd;
+
+                $.serverFiles.fileAdd = function(files){
+                    if(files.length > 1)
+                    {
+                        alert('".str_replace("'","\'",$this->translate('You can select only one image file'))."');
+                    }
+
+                    var file = files[0];
+
+                    if(!/(jp?g|png|gif)$/i.test(file.extension))
+                    {
+                        alert('".str_replace("'","\'",$this->translate('You can select only image file'))."');
+                    }
+
+
+                    if(file.path.charAt(0) == '/')
+                    {
+                        file.path = file.path.substr(1);
+                    }
+
+                    $('#image-input').val(file.path);
+                    $('#image-holder').html('<img style=\"max-width:480px;\" src=\"'+file.path+'\" class=\"img-responsive center-block\">');
+                    
+                    $.serverFiles.fileAdd = oldTrigger;
+                };
+
+                $('#summernote-server-explore-btn').click();
+            });
+        });
+    ");
+?>

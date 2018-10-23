@@ -1,0 +1,25 @@
+<?php
+return array(
+    'Qashstat'      => 'Qashstat',
+    'Company name'  => 'Qashqadaryo viloyati statistika boshqarmasi',
+    'Font up'       => 'Shriftni kattalashtirish',
+    'Font normal'   => 'Shriftni normallashtirish',
+    'Font down'     => 'Shriftni kichiklashtirish',
+    'Style normal'  => 'Normal ko\'rinish',
+    'Style dark'    => 'Qorong\'ilashgan ko\'rinish',
+    'Style black'   => 'Oq-qora ko\'rinish',
+    'National emblem Republic of Uzbekistan'=> 'O\'zbekiston Respublikasi davlat gerbi',
+    'National flag Republic of Uzbekistan'=> 'O\'zbekiston Respublikasi davlat bayrag\'i',
+    'National anthem Republic of Uzbekistan'=> 'O\'zbekiston Respublikasi davlat madhiyasi',
+    'Search'		=> 'Qidiruv',
+    'Useful links will be added soon' => 'Foydali havolalar yaqin orada qo\'shiladi',
+    'Events will be added soon' => 'Choraklik muddatlari yaqin orada qo\'shiladi',
+    'Report typo' => 'Xatolik haqida habar.',
+    'Report was sended. Thank you for your support.' => 'Xatolik haqidagi habar jo\'natildi. Yordamingiz uchun rahmat.',
+    'Error encountered while sending report.' => 'Xatolik haqida habar jo\'natilayotganda xatolik yuz berdi.',
+    'Own news'  => 'Boshqarma yangiliklari',
+    'Stat news' => 'Qo\'mita yangiliklari',
+    'Vil news'  => 'Viloyat yangiliklari',
+    'Uzb news'  => 'O\'zR yangiliklari',
+);
+?>

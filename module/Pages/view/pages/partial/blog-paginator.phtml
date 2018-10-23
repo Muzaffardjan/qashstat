@@ -1,0 +1,134 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Zend\View\HelperPluginManager $helperPluginManager
+ * @var \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+ * @var \Zend\Http\Request $request
+ * @var array $query
+ * @var array $params
+ */
+$helperPluginManager = $this->getHelperPluginManager();
+$serviceLocator = $helperPluginManager->getServiceLocator();
+$request = $serviceLocator->get('request');
+$query = $request->getQuery()->toArray();
+$params = $this->get('params');
+?>
+
+<?php if ($this->pageCount > 1) : ?>
+    <nav role="page navigation">
+        <ul class="pagination">
+            <!-- Previous page link -->
+            <?php if (isset($this->previous)) : ?>
+                <?php $query['page'] = $this->previous ?>
+                <li>
+                    <?php if (empty($params)) : ?>
+                        <a href="<?php
+                            echo $this->url(
+                                $this->get('route'),
+                                ['locale' => $this->currentLocale()],
+                                ['query' => $query]
+                            );
+                        ?>">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    <?php else : ?>
+                        <a href="<?php
+                            echo $this->url(
+                                $this->get('route'),
+                                [
+                                    'locale' => $this->currentLocale(),
+                                    'category' => $params['category']
+                                ],
+                                ['query' => $query]
+                            );
+                        ?>">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    <?php endif; ?>
+                </li>
+            <?php else : ?>
+                <li class="disabled">
+                    <a href="javascript:void(0);">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            <?php endif; ?>
+
+            <!-- Numbers -->
+            <?php foreach ($this->pagesInRange as $page) : ?>
+                <?php $query['page'] = $page; ?>
+                <?php if ($page !== $this->current) : ?>
+                    <li>
+                        <?php if (empty($params)) : ?>
+                            <a href="<?php
+                                echo $this->url(
+                                    $this->get('route'),
+                                    ['locale' => $this->currentLocale()],
+                                    ['query' => $query]
+                                )
+                            ?>">
+                                <?php echo $page ?>
+                            </a>
+                        <?php else : ?>
+                            <a href="<?php
+                                echo $this->url(
+                                    $this->get('route'),
+                                    [
+                                        'locale' => $this->currentLocale(),
+                                        'category' => $params['category']
+                                    ],
+                                    ['query' => $query]
+                                )
+                            ?>">
+                                <?php echo $page ?>
+                            </a>
+                        <?php endif; ?>
+                    </li>
+                <?php else : ?>
+                    <li class="active">
+                        <a href="javascript:void(0);">
+                            <?php echo $page; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+
+            <!-- Next page link -->
+            <?php if (isset($this->next)) : ?>
+                <?php $query['page'] = $this->next ?>
+                <li>
+                    <?php if (empty($params)) : ?>
+                        <a href="<?php
+                            echo $this->url(
+                                $this->get('route'),
+                                ['locale' => $this->currentLocale()],
+                                ['query' => $query]
+                            );
+                        ?>">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    <?php else : ?>
+                        <a href="<?php
+                            echo $this->url(
+                                $this->get('route'),
+                                [
+                                    'locale' => $this->currentLocale(),
+                                    'category' => $params['category']
+                                ],
+                                ['query' => $query]
+                            );
+                        ?>">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    <?php endif; ?>
+                </li>
+            <?php else : ?>
+                <li class="disabled">
+                        <a href="javascript:void(0);" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+<?php endif; ?>

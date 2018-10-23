@@ -1,0 +1,188 @@
+<?php  
+	$this->headTitle()->append($this->translate('Search'));
+
+	$this->form
+	->setAttribute
+	(
+		'action', 
+		$this->url
+		(
+			'search', 
+			array(
+				'locale' => $this->currentLocale()
+			)
+		)
+	)->prepare();
+?>
+<?php echo $this->form()->openTag($this->form) ?>
+	<h3><?php echo $this->translate('Filters') ?></h3>
+	<div class="row">
+		<div class="form-group col-sm-6 <?php if($this->form->get('sort')->getMessages()) echo 'has-error' ?>">
+			<?php echo $this->formLabel($this->form->get('sort')) ?>
+			<?php  
+				echo $this->formSelect
+				(
+					$this->form->get('sort')
+					->setAttribute('class', 'form-control')
+				)
+			?>
+			<div class="text-danger">
+				<?php echo $this->formElementErrors($this->form->get('sort')) ?>
+			</div>
+		</div>
+		<div class="form-group col-sm-6 <?php if($this->form->get('type')->getMessages()) echo 'has-error' ?>">
+			<?php echo $this->formLabel($this->form->get('type')) ?>
+			<?php  
+				echo $this->formSelect
+				(
+					$this->form->get('type')
+					->setAttribute('class', 'form-control')
+				)
+			?>
+			<div class="text-danger">
+				<?php echo $this->formElementErrors($this->form->get('type')) ?>
+			</div>
+		</div>
+	</div>
+	<div class="form-group <?php if($this->form->get('search')->getMessages()) echo 'has-error' ?>">
+		<h3><?php echo $this->translate($this->form->get('search')->getLabel()) ?></h3>
+		<div class="input-group">
+			<?php  
+				echo $this->formText
+				(
+					$this->form->get('search')
+					->setAttribute('style', 'height: 48px;')
+					->setAttribute('class', 'form-control')
+				)
+			?>
+			<div class="input-group-btn">
+				<button type="submit" class="btn btn-primary">
+					<i class="fa fa-search"></i>
+				</button>
+			</div>
+		</div>
+		<div class="text-danger">
+			<?php echo $this->formElementErrors($this->form->get('search')) ?>
+		</div>
+	</div>
+<?php echo $this->form()->closeTag() ?>
+
+<?php if ($this->posts->count()): ?>
+	<?php foreach ($this->posts as $post): ?>
+		<article class="post format-small-image">
+			<div class="row">
+				<?php if ($post instanceof \Pages\ArrayObject\News && $post->category): ?>
+					<?php if($post->image): ?>
+						<div class="entry-thumbnail col-sm-4">
+							<img src="<?php echo $post->image ?>" class="img-responsive center-block">
+						</div>
+					<?php endif; ?>
+					<div class="col-sm-8">
+						<header class="entry-header">
+							<h2 class="entry-title">
+								<a rel="bookmark" href="<?php echo $this->url('news/view', array('locale' => $post->locale, 'category' => $post->category->url, 'page' => $post->url, 'year' => date('Y', $post->added), 'month' => date('m', $post->added), 'date' => date('d', $post->added))) ?>"><?php echo $post->title ?></a>
+							</h2>
+							<div class="entry-meta">
+								<?php if($post->category): ?>
+									<span class="categories-links">
+										<?php echo $this->translate('In') ?>
+										<a href="<?php echo $this->url('blog/default', array('locale' => $post->category->locale, 'category' => $post->category->url)) ?>" rel="category"><?php echo $post->category->title ?></a>
+									</span>
+								<?php endif ?>
+								<span class="date">
+									<i class="fa fa-calendar-o"></i>
+									<time class="entry-date" datetime="<?php echo date('c', $post->added) ?>">
+										<?php echo $this->dateFormat(
+	                                        (int) $post->added,
+	                                        IntlDateFormatter::LONG, // date
+	                                        IntlDateFormatter::NONE, // time
+	                                        $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+	                                    ); ?>
+									</time>
+								</span>
+							</div>
+							<!-- .entry-meta --> 
+						</header>
+						<!-- .entry-header -->
+						<div class="entry-content">
+							<p><?php echo $post->description ?></p>
+						</div>
+						<!-- .entry-content -->
+					</div>
+				<?php elseif($post instanceof \Pages\ArrayObject\Event): ?>
+					<div class="col-sm-12">
+						<header class="entry-header">
+							<h2 class="entry-title">
+								<a rel="bookmark" href="<?php echo $this->url('events/view', array('locale' => $post->locale, 'page' => $post->url)) ?>"><?php echo $post->title ?></a>
+							</h2>
+							<div class="entry-meta">
+								<span class="categories-links">
+									<?php echo $this->translate('In') ?>
+									<a href="<?php echo $this->url('events/wall', array('locale' => $post->locale)) ?>" rel="category"><?php echo $this->translate('Events') ?></a>
+									<?php if($post->happens > time()): ?>
+										<?php echo $this->translate('Happened') ?> :
+									<?php else: ?>
+										<?php echo $this->translate('Happens') ?> :
+									<?php endif ?>
+									<?php echo $this->dateFormat(
+                                        (int) $post->happens,
+                                        IntlDateFormatter::LONG, // date
+                                        IntlDateFormatter::NONE, // time
+                                        $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+                                    ); ?>	
+								</span>
+								<span class="date">
+									<i class="fa fa-calendar-o"></i>
+									<time class="entry-date" datetime="<?php echo date('c', $post->added) ?>">
+										<?php echo $this->dateFormat(
+	                                        (int) $post->added,
+	                                        IntlDateFormatter::LONG, // date
+	                                        IntlDateFormatter::NONE, // time
+	                                        $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+	                                    ); ?>
+									</time>
+								</span>
+							</div>
+							<!-- .entry-meta --> 
+						</header>
+						<!-- .entry-header -->
+						<div class="entry-content">
+							<p><?php echo $post->description ?></p>
+						</div>
+						<!-- .entry-content -->
+					</div>
+				<?php else: ?>
+					<div class="col-sm-12">
+						<header class="entry-header">
+							<h2 class="entry-title">
+								<a rel="bookmark" href="<?php echo $this->url('page/view', array('locale' => $post->locale, 'page' => $post->url)) ?>"><?php echo $post->title ?></a>
+							</h2>
+							<div class="entry-meta">
+								
+							</div>
+							<!-- .entry-meta --> 
+						</header>
+						<!-- .entry-header -->
+					</div>
+				<?php endif ?>
+			</div>
+		</article>
+		<hr>
+	<?php endforeach ?>
+<?php else: ?>
+	<div class="alert alert-warning text-center">
+		<i class="rt-icon-times fa-2x"></i>
+		<h3>
+			<?php echo $this->translate('Nothing found') ?>
+		</h3>
+	</div>
+<?php endif ?>
+<!-- .post -->
+<?php 
+	echo $this->paginationControl(
+		$this->posts,
+        'Sliding',
+        'pages/partial/blog-paginator', 
+        ['route' => 'search']
+    ); 
+?>

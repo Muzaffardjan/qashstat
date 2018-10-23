@@ -1,0 +1,54 @@
+<?php echo $this->headTitle()->append($this->translate('Delete gallery'))->append($this->translate('Media')) ?>
+<?php $locales = $this->getHelperPluginManager()->getServiceLocator()->get('config')['translator']['locales']; ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-8">
+		<h2><?php echo $this->translate('Delete gallery') ?></h2>
+		<?php
+			$this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+			echo $this->navigation()
+					  ->breadcrumbs()
+					  ->setMinDepth(0)               
+					  ->setMaxDepth(4)         
+					  ->setPartial('partial/admin-breadcrumbs');
+		?>
+	</div>
+	<div class="col-sm-4">
+		<div class="title-action">
+			<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'galleries')) ?>" class="btn btn-primary">
+				<i class="fa fa-arrow-left"></i>
+				<?php echo $this->translate('Back'); ?>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">   
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Delete gallery'); ?></h5>
+				</div>
+				<div class="ibox-content">
+					<h2><?php echo $this->translate('Gallery') . ": " . $this->gallery->title; ?></h2>
+					<h4><?php echo $this->translate('Language') . ": " . $locales[$this->gallery->locale]; ?></h4>
+					<h4><?php echo $this->translate('Image collection') . ": " . $this->gallery->images; ?></h4>
+					<br>
+					<h4><?php echo $this->translate('Do you want to delete this gallery ?'); ?></h4>
+					<form action="" method="post">
+						<div class="form-group">
+							<button type="submit" class="btn btn-danger">
+								<i class="fa fa-trash"></i>
+								<?php echo $this->translate('Delete'); ?>
+							</button>
+							<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'galleries')) ?>" class="btn btn-default">
+								<i class="fa fa-remove"></i>
+								<?php echo $this->translate('Cancel'); ?>
+							</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

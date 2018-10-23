@@ -1,0 +1,54 @@
+<?php  
+    echo $this->headTitle()->append($this->translate('Gallery'));
+    $locator = $this->getHelperPluginManager()->getServiceLocator();
+    $mediaConfig = $locator->get('config');
+    $mediaConfig = $mediaConfig['media'];
+?>
+
+<div class="page-view">
+    <div class="pull-right print_button">
+        <i title="" data-original-title="" class="ezo-print"></i>
+    </div>
+
+    <ol class="breadcrumb">
+        <li>
+            <a href="<?php echo $this->url('home-locale', ['locale' => $this->currentLocale()]) ?>">
+                <?php echo $this->translate('Home') ?>
+            </a>
+        </li>
+        <li class="active"><?php echo $this->translate('Galleries'); ?></li>
+    </ol>
+
+    <div class="page-content">
+        <h3>
+            <?php echo $this->translate('Galleries'); ?>
+        </h3>
+
+        <div class="row">
+            <?php
+                foreach($this->galleries as $gallery) :
+                    if(
+                        !isset($this->images[$gallery->images]) || 
+                        !count($this->images[$gallery->images])
+                    ) {
+                        continue;
+                    }
+            ?>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <a class="img-thumbnail" href="<?php echo $this->url('gallery/view', ['locale' => $this->currentLocale(), 'gallery' => $gallery->url]); ?>">
+                    <?php $imgPath = $mediaConfig['public_path'] . "collection_" . $this->images[$gallery->images][0]->name . "/" . $this->images[$gallery->images][0]->src; ?>
+                    <img class="img-responsive center-block" src="<?php echo $this->basePath($imgPath) ?>" alt="<?php echo $this->translate('Sample') ?>">
+                    <span class="text-info" style="position: absolute;bottom: 4em;right: 2em;">
+                        <b><?php echo sprintf($this->translate('%s image(s)'), count($this->images[$gallery->images])) ?></b>
+                    </span>
+                </a>
+
+                <a class="" href="<?php echo $this->url('gallery/view', ['locale' => $this->currentLocale(), 'gallery' => $gallery->url]); ?>">
+                    <h4 style="margin-top: 5px;color:#000;"><?php echo $gallery->title; ?></h4>
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+    

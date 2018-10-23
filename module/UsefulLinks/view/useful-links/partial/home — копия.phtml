@@ -1,0 +1,45 @@
+<?php $counter = 0; ?>
+<?php if ($this->links) : ?>
+    <?php
+        foreach ($this->links as $link) {
+            if($counter == 0) {
+                echo '<div class="row space-row-5 margin-b-10">';
+            }
+
+            echo '
+                <div class="col-md-4 md-margin-b-10">
+                    <div class="services-v4 radius-3 services-v4-equal-height">
+                        <div class="center-content-hor-wrap-sm services-v4-body">
+                            <div class="center-content-hor-align-sm services-v4-media">
+                                <img class="services-v4-icon" src="'.$this->basePath($link->image).'" alt="">
+                            </div>
+
+                            <div class="center-content-hor-align-sm services-v4-content">
+                                <h6 class="services-v4-title" style="font-size: 20px;">'.$link->url.'</h6>
+                                <p class="services-v4-text md-margin-b-20">'.$link->title.'</p>
+                                <span class="services-v4-learn">'.$this->translate('More about links').'</span>
+                            </div>
+                        </div>
+
+                        <a class="services-v4-link" href="'.$link->url.'" target="_blank"></a>
+                    </div>
+                </div>
+            ';
+
+            $counter++;
+
+            if($counter == 3) {
+                echo '</div>';
+                $counter = 0;
+            }
+        }
+    ?>
+<?php else : ?>
+    <div class="alert alert-info" style="width: 100% !important;">
+        <h3>
+            <i class="rt-icon-pencil2"></i>
+        </h3>
+
+        <h4><?php echo $this->translate('Information will be added soon') ?></h4>
+    </div>
+<?php endif; ?>

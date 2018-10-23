@@ -1,0 +1,219 @@
+<?php echo $this->doctype(); ?>
+<html lang="<?php echo substr($this->currentLocale(), 0, 2) ?>">
+<head>
+    <meta charset="utf-8">
+    <base href="<?php echo $this->basePath('/') ?>">
+    <?php
+        echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+        echo $this->headTitle(
+            sprintf(
+                $this->translate('Dashboard %s'),
+                $this->translate('Project name')
+            )
+        )
+        ->setSeparator(' :: ')
+        ->setAutoEscape(false);
+    ?>
+
+    <?php
+        echo $this->headLink(
+            array(
+                'rel' => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath('dist/img/developer.png')
+            )
+        )
+        ->prependStylesheet($this->basePath('dist/css/admin.css'))
+        ->prependStylesheet($this->basePath('dist/css/animate.css'))
+        ->prependStylesheet($this->basePath('dist/css/jquery.gritter.css'))
+        ->prependStylesheet($this->basePath('dist/plugins/toastr/toastr.min.css'))
+        ->prependStylesheet($this->basePath('dist/plugins/font-awesome/css/font-awesome.css'))
+        ->prependStylesheet($this->basePath('dist/plugins/bootstrap/css/bootstrap.min.css'));
+    ?>
+
+    <?php echo $this->headStyle() ?>
+
+    <?php 
+        echo $this->headScript()
+            ->prependFile($this->basePath('dist/js/jquery-2.1.1.js'));
+    ?>
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <?php if ($this->identity()): ?>
+                    <li class="nav-header">
+                        <div class="dropdown profile-element"> 
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear"> 
+                                    <span class="block m-t-xs"> 
+                                        <strong class="font-bold">
+                                            <?php echo $this->identity()->name; ?>
+                                        </strong>
+                                    </span>
+
+                                    <span class="text-muted text-xs block">
+                                        <?php echo $this->identity()->roles; ?>
+                                        <b class="caret"></b>
+                                    </span>
+                                </span> 
+                            </a>
+
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li>
+                                    <a href="<?php
+                                        echo $this->url(
+                                            'profile/default',
+                                            array(
+                                                'locale' => $this->currentLocale()
+                                            )
+                                        );
+                                    ?>">
+                                        <?php echo $this->translate('Profile') ?>
+                                    </a>
+                                </li>
+
+                                <li class="divider"></li>
+
+                                <li>
+                                    <a href="<?php
+                                        echo $this->url(
+                                            'admin/users',
+                                            array(
+                                                'locale' => $this->currentLocale(),
+                                                'action' => 'logout'
+                                            )
+                                        );
+                                    ?>">
+                                        <?php echo $this->translate('Logout') ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="logo-element">
+                            <?php echo substr($this->identity()->name, 0, 1) ?>
+                        </div>
+                    </li>
+                    <?php endif ?>
+
+                    <?php
+                        echo $this->navigation('Zend\Navigation\Admin')
+                            ->menu()
+                            ->setPartial('admin/partial/navigation');
+                    ?>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <button class="navbar-minimalize minimalize-styl-2 btn btn-primary">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <ul class="nav navbar-top-links navbar-right">
+                        <?php if($this->isGranted('typo_report.manage')): ?>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-bell"></i> 
+                                    <span class="label label-<?php echo count($this->typoAlert()->getUncorrected())? 'danger': 'success' ?>">
+                                        <?php echo count($this->typoAlert()->getUncorrected()); ?>
+                                    </span>
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-alerts">
+                                    <?php echo $this->typoAlert('admin/partial/typo-alert'); ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php if($this->isGranted('contacts.manage')): ?>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-reply-all"></i> 
+                                    <span class="label label-<?php echo $this->feedbacks()->count()? 'warning': 'success' ?>">
+                                        <?php echo $this->feedbacks()->count(); ?>
+                                    </span>
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-alerts">
+                                <?php foreach($this->feedbacks()->fetch() as $data): ?>
+                                    <li>
+                                        <a href="<?php echo $this->url('admin/feedback', array('locale' => $this->currentLocale(), 'controller' => 'admin', 'action' => 'read', 'id' => $data->id)); ?>">
+                                            <div>
+                                                <i class="fa fa-envelope fa-fw"></i>
+
+                                                <span class="title">
+                                                    <?php echo ucfirst($data->subject); ?>
+                                                </span>
+
+                                                <span class="pull-right text-muted small">
+                                                    <?php
+                                                        echo date('d-m-Y', $data->time);
+                                                    ?>
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                    <li class="divider"></li>
+                                <?php endforeach; ?>
+
+                                    <li>
+                                        <div class="text-center link-block">
+                                            <a href="<?php
+                                                echo $this->url(
+                                                    'admin/feedback',
+                                                    array(
+                                                        'locale' => $this->currentLocale(),
+                                                        'controller' => 'admin',
+                                                        'action' => 'index'
+                                                    )
+                                                );
+                                            ?>">
+                                                <strong><?php echo $this->translate('See All Feedbacks'); ?></strong>
+                                                <i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            </div>
+
+            <?php echo $this->content; ?>
+
+            <div class="footer">
+                <div class="pull-right">
+                    <strong>Copyright</strong>
+                    <a href="http://foreach.uz">Foreach soft</a>
+                    &copy; 2016
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php
+        echo $this->inlineScript()
+            ->prependFile($this->basePath('dist/plugins/pace/pace.min.js'))
+            ->prependFile($this->basePath('dist/plugins/slimscroll/jquery.slimscroll.min.js'))
+            ->prependFile($this->basePath('dist/plugins/metisMenu/jquery.metisMenu.js'))
+            ->prependFile($this->basePath('dist/plugins/toastr/toastr.min.js'))
+            ->prependFile($this->basePath('dist/plugins/bootstrap/js/bootstrap.min.js'));
+    ?>
+
+    <script src="<?php echo $this->basePath('dist/js/inspinia.js'); ?>"></script>
+
+    <?php echo $this->partial('admin/partial/flashmessage') ?>
+</body>
+</html>

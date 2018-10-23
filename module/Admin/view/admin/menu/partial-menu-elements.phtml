@@ -1,0 +1,27 @@
+<?php foreach ($this->container as $page): ?>
+    <?php  
+        if(isset($page['pages']) && $page['pages'])
+        {
+            $page['children'] = $page['pages'];
+            unset($page['pages']);
+        }
+    ?>
+	<li class="dd-item" id="<?php echo ($id = uniqid()) ?>">
+		<div class="dd-handle">
+            <span class="label label-info">
+                <i style="font-size:1.2em;" class="fa fa-plus-square-o fa-fw"></i>
+            </span>
+            <span><?php echo $page['label'] ?></span>
+            
+        </div>
+
+        <?php if (!empty($page['children'])): ?>
+        	<ol class="dd-list">
+        		<?php echo $this->partial('admin/menu/partial-menu-elements', array('container' => $page['children'])) ?>
+        	</ol>
+        <?php endif ?>
+	</li>
+    <script type="text/javascript">
+        $('#<?php echo $id ?>').data(<?php echo $this->json($page) ?>);
+    </script>
+<?php endforeach ?>

@@ -1,0 +1,26 @@
+<?php
+    return array(
+        "RSS feed of %s" => "RSS xabarnoma %s",
+        "Search"         => "Qidirish",
+        "Sort by"        => "bo'yicha saralash",
+        "Relevance"      => "Dolzarbligi",
+        "Type"           => "Tur",
+        "All"            => "Xammasi",
+        "Blog"           => "Blog",
+        "Home"           => "Bosh sahifa",
+        "In"             => "Da",
+        "Categories"     => "Bo'limlar",
+        "Archive"        => "Arxiv",
+        "Quiz"           => "Viktorina",
+        "Events"         => "Tadbirlar",
+        "Happened"       => "muddat tugagan",
+        "Happens"        => "gacha",
+        "Related"        => "O'xshashlar",
+        "Search"         => "Izlash",
+        "Filters"        => "Filtrlar",
+        "Nothing found"  => "Hech narsa topilmadi",  
+        "Mo,Tu,We,Th,Fr,Sa,Su" => "Du,Se,Cho,Pay,Ju,Sha,Yak",
+        "Information will be added soon" => "Yangiliklar yaqin orada qo'shilari",
+        "January,February,March,April,May,June,July,August,September,October,November,December" => "Yanvar,Fevral,Mart,Aprel,May,Iyun,Iyul,Avgust,Sentabr,Oktabr,Noyabr,Dekabr",
+    );
+?>

@@ -1,0 +1,27 @@
+<p><?php echo $this->translate('Please, subscribe to our latest news to be updated.'); ?></p>
+<?php
+    $form = $this->form;
+    $form->prepare();
+    $form->setAttribute('method', 'post');
+    $form->setAttribute('action', $this->url('newsletter/default', array('locale' => $this->currentLocale(), 'controller' => 'manage', 'action' => 'subscribe')));
+    echo $this->form()->openTag($form);
+?>
+<div class="form-group" style="margin-bottom: 10px; width: 100%;">
+    <?php
+        echo $this->formElement(
+            $form->get('email')
+                ->setAttribute('placeholder', str_replace('"', '', $this->translate('Email')))
+                ->setAttribute('class', 'form-control'));
+        echo $this->formElementErrors($form->get('email'));
+    ?>
+</div>
+
+<button type="submit" class="btn btn-info btn-block"><?php echo $this->translate('Send'); ?></button>
+<?php echo $this->form()->closeTag() ?>
+<br>
+<p>
+    <a href="<?php echo $this->url('news/rss', array('locale' => $this->currentLocale())) ?>" class="btn btn-info btn-block" style="color: white;">
+        <i class="rt-icon-rss"></i>
+        <span><?php echo $this->translate('Subscribe to rss') ?></span>
+    </a>
+</p>

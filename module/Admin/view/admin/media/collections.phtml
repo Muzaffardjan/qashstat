@@ -1,0 +1,86 @@
+<?php echo $this->headTitle()->append($this->translate('Image collections'))->append($this->translate('Media')) ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+	<div class="col-sm-8">
+		<h2><?php echo $this->translate('Image collections') ?></h2>
+		<?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+                      ->breadcrumbs()
+                      ->setMinDepth(0)               
+                      ->setMaxDepth(4)         
+                      ->setPartial('partial/admin-breadcrumbs');
+        ?>
+	</div>
+	<div class="col-sm-4">
+		<div class="title-action">
+            <a class="btn btn-primary" href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'addImageCollection')) ?>">
+            	<i class="fa fa-plus"></i>
+            	<?php echo $this->translate('Add images collection'); ?>
+            </a>
+        </div>
+	</div>
+</div>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Image collections'); ?></h5>
+					<div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                    </div>
+				</div>
+				<div class="ibox-content">
+					<table class="table datatable">
+						<thead>
+							<th style="width: 40px;">#</th>
+							<th><?php echo $this->translate('Collection name') ?></th>
+							<th style="width: 120px;"></th>
+						</thead>
+						<tbody>
+							<?php $i=1; foreach ($this->collections as $collection) : ?>								
+							<tr>
+								<td><?php echo $i++; ?></td>
+								<td><?php echo $collection->name; ?></td>
+								<td>
+									<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'editImageCollection', 'collection' => $collection->name)); ?>" class="btn btn-default btn-outline btn-rounded" data-toggle='tooltip' data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Edit')); ?>">
+										<i class="fa fa-edit"></i>
+									</a>
+									<a href="<?php echo $this->url('admin/media', array('locale' => $this->currentLocale(), 'action' => 'deleteImageCollection', 'collection' => $collection->name)); ?>" class="btn btn-default btn-outline btn-rounded" data-toggle='tooltip' data-placement="top" data-original-title="<?php echo $this->escapeHtmlAttr($this->translate('Delete')); ?>">
+										<i class="fa fa-trash"></i>
+									</a>
+								</td>
+							</tr>
+							<?php endforeach; ?>							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php 
+	$this->headLink()
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.css'))
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.responsive.css'))
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.css'))
+	->appendStylesheet($this->basePath('dist/plugins/dataTables/dataTables.custom.css'));
+
+	$this->inlineScript()
+	->appendFile($this->basePath('dist/plugins/dataTables/jquery.dataTables.js'))
+	->appendFile($this->basePath('dist/plugins/dataTables/dataTables.bootstrap.js'))
+	->appendFile($this->basePath('dist/plugins/dataTables/dataTables.responsive.js'))
+	->appendFile($this->basePath('dist/plugins/dataTables/dataTables.tableTools.min.js'))
+	->appendScript("
+		$('.datatable').dataTable({
+			responsive: true,
+			\"language\": {
+                \"url\": \"".$this->url('application/default', array('locale' => $this->currentLocale(), 'controller' => 'jsPlugins', 'action' => 'datatablesI18n'))."\"
+            }
+		});
+		$('*[data-toggle=\"tooltip\"]').tooltip();
+	");
+?>

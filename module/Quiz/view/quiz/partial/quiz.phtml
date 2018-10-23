@@ -1,0 +1,130 @@
+<?php if ($this->question) : ?>
+<?php  
+    $isVoted  = $this->quiz()->isVoted($this->question->id);
+    $allVotes = $this->question->getVotesCount();
+?>
+    <h3 class="heading-v1-title"><?php echo $this->question->text ?></h3>
+    <p class="heading-v1-text"><?php echo $this->translate('Votes') ?>: <?php echo $allVotes ?></p>
+    <div class="tab-v1">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a class="radius-3" href="#attend" aria-controls="attend" role="tab" data-toggle="tab">
+                    <?php echo $this->translate('Attend'); ?>
+                </a>
+            </li>
+
+            <li role="presentation">
+                <a class="radius-3" href="#statistics" aria-controls="statistics" role="tab" data-toggle="tab">
+                    <?php echo $this->translate('Statistics'); ?>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="attend">
+                <?php if (!$isVoted) : ?>
+                    <?php  
+                        $form = new \Quiz\Form\Vote();
+                        $form->setAttribute(
+                            'action', 
+                            $this->url(
+                                'quiz/default', 
+                                array(
+                                    'locale'     => $this->currentLocale(), 
+                                    'controller' => 'index', 
+                                    'action'     => 'vote', 
+                                    'id'         => $this->question->id
+                                )
+                            )
+                        )   ;
+                        $form->addOptions($this->question->getAnswers());
+                        echo $this->form()->openTag($form);
+                    ?>
+                    <?php foreach ($form->get('options')->getValueOptions() as $key => $value): ?>
+                        <p>
+                            <input type="radio" name="options" value="<?php echo $this->escapeHtmlAttr($key); ?>">
+                            <?php echo $value ?>
+                        </p>
+                    <?php endforeach ?>
+                    <?php echo $this->formElementErrors($form->get('options')); ?>
+                    <button type="submit" class="btn btn-green">
+                        <span><?php echo $this->translate('Vote'); ?></span>
+                    </button>
+                    <button type="reset" class="btn btn-green">
+                        <span><?php echo $this->translate('Cancel'); ?></span>
+                    </button>
+                    <?php echo $this->form()->closeTag(); ?>
+                <?php endif; ?>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade" id="statistics">
+                <?php foreach($this->question->getAnswers() as $answer): ?>
+                    <div class="progress-box margin-b-5">
+                        <h4 class="progress-title font-style-inherit">
+                            <?php echo $answer->text ?> (<?php echo $answer->getVotesCount() ?>) 
+                            <span class="pull-right"><?php echo round(($answer->getVotesCount() / ($allVotes ? $allVotes: 1)) * 100, 1) ?>%</span>
+                        </h4>
+
+                        <div class="progress radius-0 progress-sm">
+                            <div class="progress-bar bg-color-base" role="progressbar" data-width="<?php echo round(($answer->getVotesCount() / ($allVotes ? $allVotes: 1)) * 100, 1) ?>"></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(window).load(function() {
+            $('#attend').on('vote.done', function(e,xhr) {
+                if (xhr.readyState == 4 && xhr.responseJSON) {
+                    var template = ''+
+                        '<h4 class="progress-title font-style-inherit">%text (%votes)</h4>'+
+                        '<div class="progress radius-0 progress-sm">'+
+                            '<div class="progress-bar bg-color-base" role="progressbar" data-width="%percent"></div>'+
+                        '</div>';
+                    var question    = xhr.responseJSON.question;
+                    var answers     = xhr.responseJSON.answers;
+
+                    // Click stats tab
+                    $('a[href="#statistics"]').click();
+                    // Remove tab toggler
+                    $('a[href="#attend"]').parent().remove();
+                    // Remove tab
+                    $('#attend').remove();
+
+                    $('#statistics').html('');
+
+                    for (var key in answers) {
+                        var percent     = parseFloat((answers[key].votes / (question.votes ? question.votes : 1)) * 100).toFixed(1);
+                        var toAppend    = template;
+
+                        if (parseInt(percent) == percent) {
+                            percent = parseInt(percent);
+                        }
+
+                        // Replace vars if exists
+                        while (toAppend.indexOf('%text') !== -1 || toAppend.indexOf('%percent') !== -1) {
+                            toAppend = toAppend
+                            // Replace text
+                            .replace('%text', answers[key].text)
+                            // Replace vote count
+                            .replace('%votes', answers[key].votes)
+                            // Replace percent
+                            .replace('%percent', percent);
+                        }
+
+                        $('#statistics').append(toAppend);
+                    }
+                }
+            });
+        });
+    </script>
+<?php else : ?>
+    <div class="alert alert-warning text-center">
+        <h3>
+            <i class="rt-icon-chat"></i>
+        </h3>
+        <h4><?php echo $this->translate('Questions not added yet'); ?></h4>
+    </div>
+<?php endif; ?>

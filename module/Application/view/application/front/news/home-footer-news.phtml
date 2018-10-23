@@ -1,0 +1,31 @@
+<?php
+$categories = array();
+
+foreach ($this->pages()->getCategories()->fetchAll()->getCurrentSet() as $category) {
+    $categories[$category->id] = $category;
+}
+$counter = 0;
+?>
+<?php if ((is_object($this->container) && $this->container->count()) || count($this->container)): ?>
+    <?php foreach ($this->container as $news): ?>
+        <li class="footer-v4-news-item">
+            <div class="footer-v4-news-media">
+                <img class="footer-v4-news-img radius-circle" src="<?php echo $news->image; ?>" alt="">
+            </div>
+
+            <div class="footer-v4-news-content">
+                <a class="footer-v4-news-link" href="#"><?php echo $news->title; ?></a>
+                <small class="footer-v4-news-date">
+                    <?php
+                        echo $this->dateFormat(
+                            (int) $news->added,
+                            IntlDateFormatter::LONG, // date
+                            IntlDateFormatter::NONE, // time
+                            $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+                        );
+                    ?>
+                </small>
+            </div>
+        </li>
+    <?php endforeach ?>
+<?php endif ?>

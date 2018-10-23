@@ -1,0 +1,690 @@
+<?php 
+    echo $this->doctype();
+    $config  = $this->getHelperPluginManager()->getServiceLocator()->get('config');
+    $locales = $config['translator']['locales'];
+?>
+<html class="no-js" lang="<?php echo substr($this->currentLocale(), 0, 2); ?>">
+<head>
+    <meta charset="utf-8">
+    <?php
+        echo $this->headTitle($this->translate('Company name'))
+            ->setSeparator(' - ')
+            ->setAutoEscape(false);
+        echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+    ?>
+    <link href="<?php echo $this->basePath('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('owl-carousel/assets/owl.carousel.min.css'); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('owl-carousel/assets/owl.theme.default.min.css'); ?>">
+    <link href="<?php echo $this->basePath('assets/plugins/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet">
+    <link href="<?php echo $this->basePath('assets/plugins/fontello/css/karaevuz.css'); ?>" rel="stylesheet">
+    <link href="<?php echo $this->basePath('assets/plugins/fontello/css/animation.css'); ?>" rel="stylesheet">
+    <link href="<?php echo $this->basePath('assets/plugins/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css'); ?>" rel="stylesheet">
+    <link href="<?php echo $this->basePath('assets/css/qashstat.css'); ?>" rel="stylesheet">
+    <?php
+        echo $this->headLink(
+            [
+                'rel'  => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath('img/logo.png')
+            ]
+        );
+        echo $this->headStyle();
+    ?>
+    <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.cookie.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo $this->basePath('js/jquery.tagcanvas.min.js'); ?>"></script>
+    <?php echo $this->headScript(); ?>
+</head>
+<body>
+    <div id="left-fixed-bar">
+        <div id="font-setting">
+            <li>
+                <a data-size="increase" href="javascript:void(0);" data-title="<?php echo $this->translate('Font up'); ?>" data-toggle="left-fixed-bar-tooltip">
+                    <span class="ezo-plus-squared-1"></span>
+                </a>
+            </li>
+
+            <li>
+                <a data-size="reset" href="javascript:void(0);" data-title="<?php echo $this->translate('Font normal'); ?>" data-toggle="left-fixed-bar-tooltip">
+                    <span class="ezo-text-height"></span>
+                </a>
+            </li>
+
+            <li>
+                <a data-size="decrease" href="javascript:void(0);" data-title="<?php echo $this->translate('Font down'); ?>" data-toggle="left-fixed-bar-tooltip">
+                    <span class="ezo-minus-squared-1"></span>
+                </a>
+            </li>
+        </div>
+
+        <div id="style-setting">
+            <li>
+                <a data-filter="none" href="javascript:void(0);" data-title="<?php echo $this->translate('Style normal'); ?>" data-toggle="left-fixed-bar-tooltip">
+                    <span class="ezo-font-1"></span>
+                </a>
+            </li>
+
+            <li class="dark">
+                <a data-filter="grayscale" href="javascript:void(0);" data-title="<?php echo $this->translate('Style dark'); ?>" data-toggle="left-fixed-bar-tooltip">
+                    <span class="ezo-font-1"></span>
+                </a>
+            </li>
+
+            <li class="black">
+                <a data-filter="invert" href="javascript:void(0);" data-title="<?php echo $this->translate('Style black'); ?>" data-toggle="left-fixed-bar-tooltip">
+                    <span class="ezo-font-1"></span>
+                </a>
+            </li>
+        </div>
+    </div>
+
+    <div id="left-menu">
+        <div class="close-left-menu">
+            <a href="javascript:void(0);" data-toggle="close-left-menu-tooltip" data-title="<?php echo $this->translate('Close'); ?>">
+                <span class="ezo-cancel-alt"></span>
+            </a>
+        </div>
+
+        <div class="left-menu-logo">
+            <a href="<?php
+                echo $this->url(
+                    'home-locale',
+                    ['locale' => $this->currentLocale()]
+                );
+            ?>">
+                <h1><?php echo $this->translate('Qashstat'); ?></h1>
+            </a>
+        </div>
+
+        <ul>
+            <?php
+                echo $this->navigation('Menu\Positions\Statictop\\'.$this->currentLocale())
+                    ->menu()
+                    ->setPartial('application/partial/left-menu');
+            ?>
+        </ul>
+    </div>
+
+    <div class="content-inverse"></div>
+
+    <div class="container" id="wrapper">
+        <header>
+            <div class="top">
+                <!-- div class="language pull-right">
+                    <?php foreach($locales as $key => $value) : ?>
+                        <a href="<?php echo $this->url('home-locale', ['locale' => $key]); ?>">
+                            <?php echo $value; ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div -->
+
+                <div class="top-list">
+                    <a href="<?php
+                        echo $this->url(
+                            'home-locale',
+                            ['locale' => $this->currentLocale()]
+                        );
+                    ?>">
+                        <span class="ezo-home"></span>
+                    </a>
+
+                    <a href="<?php
+                        echo $this->url(
+                            'sitemap',
+                            ['locale' => $this->currentLocale()]
+                        );
+                    ?>">
+                        <span class="ezo-sitemap"></span>
+                    </a>
+
+                    <a href="<?php
+                        echo $this->url(
+                            'news/rss',
+                            ['locale' => $this->currentLocale()]
+                        );
+                    ?>">
+                        <span class="ezo-rss"></span>
+                    </a>
+
+                    <a href="http://uforum.uz/forumdisplay.php?f=468">
+                        <span class="ezo-chat"></span>
+                    </a>
+
+                    <a href="<?php
+                        echo $this->url(
+                            'time/default',
+                            ['locale' => $this->currentLocale()]
+                        );
+                    ?>">
+                        <span class="ezo-clock" id="clock"></span>
+                    </a>
+                </div>
+            </div>
+
+            <marquee style="color: red; display: none;">
+                <strong>
+                    Sayt test rejimda ishlamoqda. Saytda texnik ishlar olib borilmoqda. Xotalik ko'rsangiz uni belgilab "Xatolikni jo'natish" <i class="fa fa-check-square-o"></i> knopkasi orqali yuboring.
+                </strong>
+            </marquee>
+
+            <div class="row" id="logo">
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <div class="logo-banner">
+                        <a href="<?php echo $this->url('home-locale', array('locale' => $this->currentLocale())); ?>">
+                            <img src="<?php echo $this->basePath('img/logo.png'); ?>" class="img-responsive">
+
+                            <h2 class="logo-title">
+                                <?php echo $this->translate('Company name'); ?>
+                            </h2>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="" id="hot-phone-search">
+                        <ul class="national-symbols">
+                            <?php echo $this->block('national_symbols'); ?>
+                        </ul>
+
+                        <div class="hot-phone">
+                            <h3><?php echo $this->translate('Hot phone') ?></h3>
+
+                            <?php echo $this->block('hot_phone') ?>
+                        </div>
+
+                        <form class="form-inline" id="search" action="<?php echo $this->url('search', ['locale' => $this->currentLocale()]) ?>">
+                            <div class="input-group">
+                                <input class="form-control" placeholder="<?php echo $this->translate('Search'); ?>" type="text" name="search" >
+
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-default">
+                                        <i class="ezo-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav class="navbar" id="h-menu">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" id="open_left_menu">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-1">
+                <ul class="nav navbar-nav">
+                    <?php
+                        echo $this->navigation('Menu\Positions\Statictop\\'.$this->currentLocale())
+                            ->menu()
+                            ->setPartial('application/partial/top-menu');
+                    ?>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="content">
+            <div class="row">
+                <div class="col-md-8">
+                    <?php echo $this->content; ?>
+                </div>
+
+                <div class="col-md-4">
+                    <!-- <h3>Tahliliy ma'lumotlar</h3> -->
+                    <?php echo $this->block('tahliliy_malumotlar'); ?>
+
+                    <hr>
+
+                    <?php //echo $this->partial('pages/events/partial'); ?>
+
+                    <h3>Eslatma</h3>
+                    <?php echo $this->block('eslatma'); ?>
+
+                    <!-- <h3>E'lonlar</h3> -->
+                    <!-- <?php echo $this->block('elonlar'); ?> -->
+
+                    <hr>
+
+                    <?php echo $this->block('for_businessman'); ?>
+					
+					<div class="left-side">
+						<?php echo $this->block('korrupsiya'); ?>
+					</div>
+
+                    <div class="left-side">
+                        <div class="mk-calendar"></div>
+                    </div>
+
+                    <div class="left-side">
+                        <?php echo $this->block('state_programs'); ?>
+                    </div>
+
+                    <div class="left-side">
+                        <div class="left-side-title">
+                            <?php echo $this->translate('Weather') ?>
+                        </div>
+
+                        <select name="weather" id="weather" class="form-control" style="text-transform: uppercase; border-radius: 0;"></select>
+
+                        <div class="weather"></div>
+                    </div>
+
+                    <div class="left-side">
+                        <a href="http://cbu.uz/" target="_blank" title="Ўзбекистон Республикаси Марказий банки">
+                            <img src="http://cbu.uz/uzc/informer/?txtclr=ffffff&brdclr=009688&bgclr=009688&r_choose=USD_EUR_RUB" style="width: 100%; height: 170px;">
+                        </a>
+                    </div>
+
+                    <div class="left-side">
+                        <div id="myCanvasContainer">
+                            <canvas id="myCanvas" style="width: 100%; height: 200px;"></canvas>
+                        </div>
+
+                        <div id="tags">
+                            <ul>
+                                <li><a href="https://stat.uz/uz/" target="_blank">Statistika qo'mitasi</a></li>
+                                <li><a href="http://andstat.uz/uz/" target="_blank">Andijon viloyati</a></li>
+                                <li><a href="https://buxstat.uz" target="_blank">Buxoro viloyati</a></li>
+                                <li><a href="http://jizzaxstat.uz" target="_blank">Jizzax viloyati</a></li>
+                                <li><a href="http://qashstat.uz/uz-UZ" target="_blank">Qashqadaryo viloyati</a></li>
+                                <li><a href="http://navstat.uz" target="_blank">Navoiy viloyati</a></li>
+                                <li><a href="http://namstat.uz/uz/" target="_blank">Namangan viloyati</a></li>
+                                <li><a href="http://samstat.uz" target="_blank">Samarqand viloyati</a></li>
+                                <li><a href="http://surxonstat.uz" target="_blank">Surxandaryo viloyati</a></li>
+                                <li><a href="http://sirstat.uz" target="_blank">Sirdaryo viloyati</a></li>
+                                <li><a href="http://toshstat.uz" target="_blank">Toshkent shahri</a></li>
+                                <li><a href="http://www.toshvilstat.uz" target="_blank">Toshkent viloyati</a></li>
+                                <li><a href="http://farstat.uz" target="_blank">Farg'ona viloyati</a></li>
+                                <li><a href="http://xorazmstat.uz" target="_blank">Xorazm viloyati</a></li>
+                                <li><a href="http://qrstat.uz" target="_blank">Qoraqalpog'iston Respublikasi</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="useful-links">
+                <div class="useful-links-title">
+                    <h2>
+                        <?php echo $this->translate('Useful links'); ?>
+                    </h2>
+                </div>
+
+                <?php echo $this->usefulLinks('useful-links/partial/home'); ?>
+            </div>
+        </div>
+
+        <footer>
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="footer-title">
+                        <h3><?php echo $this->translate('Contact info'); ?></h3>
+                    </div>
+
+                    <div class="footer-text">
+                        <?php echo $this->block('footer_contact_info'); ?>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="footer-title">
+                        <h3><?php echo $this->translate('Reglament'); ?></h3>
+                    </div>
+
+                    <div class="footer-text">
+                        <p>
+                            Saytdagi ma'lumotlardan foydalanganda, qashstat.uz sayti manbaa sifatida ko'rsatilishi shart.
+                        </p>
+
+                        <p>
+                            Agar siz matnda xatoliklarni aniqlasangiz, ularni belgilab, ma'muriyatni xabardor qiling.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="footer-title">
+                        <h3><?php echo $this->translate('Subscribe'); ?></h3>
+                    </div>
+
+                    <div class="footer-text">
+                        <p>
+                            Sayt yangiliklaridan xabardor bo'lib turish uchun iltimos sayt yangiliklariga obuna bo'ling
+                        </p>
+
+                        <form>
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Email">
+                            </div>
+
+                            <button type="submit" class="btn btn-block btn-custom">
+                                <?php echo $this->translate('Subscribe'); ?>
+                                <i class="ezo-mail"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="pull-right counter">
+                    <li>
+                        <?php echo $this->partial('application/partial/wwwuz'); ?>
+                    </li>
+                </div>
+
+                <div class="copyright">
+                    <a href="http://qashstat.uz">
+                        <i class="ezo-copyright"></i>
+                        <!-- img style="max-height:3em;margin-left:5px;margin-right:-8px;" src="<?php echo $this->basePath('assets/img/foreachsoft.png'); ?>" -->
+                        Qashqadaryo viloyati Statistika boshqarmasi DTT va MS markazi.
+                        <?php echo date_default_timezone_get(); ?>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+<!-- BEGIN JIVOSITE CODE {literal} -->
+<!-- script type='text/javascript'>
+    (function() {
+        var widget_id = 'zGrSrWMuJA';
+        var d         = document;
+        var w         = window;
+
+        function l() {
+            var s = document.createElement('script');
+
+            s.type  = 'text/javascript';
+            s.async = true;
+            s.src   = '//code.jivosite.com/script/widget/' + widget_id;
+
+            var ss = document.getElementsByTagName('script')[0];
+
+            ss.parentNode.insertBefore(s, ss);
+        }
+
+        if (d.readyState == 'complete') {
+            l();
+        } else {
+            if (w.attachEvent) {
+                w.attachEvent('onload', l);
+            } else {
+                w.addEventListener('load', l, false);
+            }
+        }
+    })();
+</script -->
+<!-- {/literal} END JIVOSITE CODE -->
+
+    <form id="mistakes-form" class="form" action="<?php echo $this->url('typo-report/default', array('locale' => $this->currentLocale())) ?>" name="mistakes-form" method="POST"> 
+        <div class="modal fade in" id="typo-rep">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><?php echo $this->translate('Report typo') ?></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="bootbox-body">
+                            <input type="hidden" name="url" value="<?php echo $this->serverUrl(true) ?>">
+                            <div class="form-group">
+                                <label for="text"><?php echo $this->translate('Typo') ?></label>      
+                                <textarea readonly="readonly" id="mistaken-text" class="form-control" required="required" name="text"></textarea>           
+                            </div>
+                            <div class="form-group ">
+                                <label for="comment"><?php echo $this->translate('Comment') ?></label>        
+                                <textarea class="form-control" name="comment"></textarea>           
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn btn-success" type="submit"><?php echo $this->translate('Send') ?></button>
+                        <button class="btn btn btn-white" type="button" data-dismiss="modal"><?php echo $this->translate('Cancel') ?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script src="<?php echo $this->basePath('assets/plugins/moment/moment.min.js') ?>"></script>
+    <script src="<?php echo $this->basePath('assets/plugins/moment/uz-uz.js') ?>"></script>
+    <script src="<?php echo $this->basePath('assets/plugins/bootstrap/js/bootstrap.min.js') ?>"></script>
+    <script src="<?php echo $this->basePath('assets/plugins/bootstrap-datepicker/js/bootstrap-datetimepicker.min.js') ?>"></script>
+    <script src="<?php echo $this->basePath('owl-carousel/owl.carousel.js'); ?>"></script>
+    <script src="<?php echo $this->basePath('assets/js/qashstat.js') ?>"></script>
+    <script src="<?php echo $this->basePath('assets/plugins/clock/clock.js') ?>"></script>
+    <script src="<?php echo $this->basePath('js/grammar.js') ?>"></script>
+    <script src="<?php echo $this->basePath('js/narrator.js') ?>"></script>
+    <script src="<?php echo $this->basePath('assets/js/special.js') ?>"></script>
+
+    <?php echo $this->inlineScript(); ?>
+
+    <script>
+        $(document).ready(function() {
+            $('#clock').clock({
+                lang         : 'uz',
+                weakNameType : 'long'
+            });
+
+            $('.mk-calendar').datetimepicker({
+                inline              : true,
+                dayViewHeaderFormat : 'YYYY MMMM',
+                format              : 'DD/MM/YYYY'
+            });
+
+            var _applicationMistakes = new Grammar();
+            var _selectionMenu       = $('<div role="tooltip" class="popover fade top in" id="selection-menu"><div class="arrow" style="left: 50%;"></div><h3 class="popover-title" style="display: none;"></h3><div class="popover-content" style="padding:5px;"><button class="btn btn-raised btn-info" style="margin:0;padding:2px 7px;text-transform:none;" id="report-mistake"><i class="fa fa-check-square-o"></i></button><button class="btn btn-raised btn-info" style="margin:0 0 0 10px;padding:2px 7px;text-transform:none;" id="btn-reader"><i class="fa fa-volume-up"></i></button></div></div>');
+
+            $('body').append(_selectionMenu);
+            _selectionMenu.hide();
+
+            _applicationMistakes.addEventListener(function(text){
+                // on select
+                if (_applicationMistakes.modalVisibility) {
+                    return;
+                }
+
+                var coords = _applicationMistakes.getSelectionCoords();
+
+                _selectionMenu.css({
+                    'position': 'absolute',
+                    'top'     : (coords.y + $(window).scrollTop()) - _selectionMenu.height(),
+                    'left'    : coords.x
+                });
+
+                _selectionMenu.show();
+            }, function(){
+                // on cancel or e.g
+                if(_selectionMenu.jquery)
+                    _selectionMenu.hide();
+
+                _applicationMistakes.cancelSelection();
+            });
+
+            $('body').on('click', '#report-mistake', function(){
+                _selectionMenu.hide();
+                _applicationMistakes.cancelSelection();
+                _applicationMistakes.modalVisibility = true;
+
+                $('#typo-rep').modal('show');
+                $('#mistaken-text').val(_applicationMistakes.lastSelection);
+            });
+
+            $('#typo-rep').on('hide.bs.modal', function(){
+                _applicationMistakes.modalVisibility = false;
+            });
+
+            $('#mistakes-form').submit(function(e){
+                e.preventDefault();
+
+                var form     = $(this);
+                var sendData = form.serialize();
+
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: sendData,
+                    success: function() {
+                        alert('<?php echo str_replace("'", "", $this->translate('Report was sended. Thank you for your support.')) ?>');
+                        $('#typo-rep').modal('hide');
+                    },
+                    error: function() {
+                        alert('<?php echo str_replace("'", "", $this->translate('Error encountered while sending report.')) ?>');
+                    },
+                });
+            });
+
+            var narrator = new Narrator({
+                requestUrl : '<?php echo $this->url('application/default', ['locale' => $this->currentLocale(), 'controller' => 'narrator', 'action' => 'speak']); ?>',
+                csrfToken  : '<?php echo \Application\Controller\NarratorController::getCsrfToken($this->serverUrl(true)) ?>'
+            });
+
+            $('#btn-reader').on('click', function() {
+                var text = _applicationMistakes.lastSelection;
+
+                if (text != "") {
+                    narrator.speak(text);
+                }
+            });
+
+            $(narrator).on('onrequest', function() {
+                $('#btn-reader>i').removeClass('fa-volume-up').addClass('fa-spinner fa-spin');
+            });
+
+            $(narrator).on('onerror', function() {
+                $('#btn-reader>i').addClass('fa-volume-up').removeClass('fa-spinner fa-spin');
+            });
+
+            $(narrator).on('onspeakend', function() {
+                $('#btn-reader>i').addClass('fa-volume-up').removeClass('fa-spinner fa-spin');
+            });
+        });
+
+        (function(window, document, $) {
+            $(window).load(function() {
+                $('#weather').trigger('change');
+            });
+
+            $(document).ready(function() {
+                var lang   = window.location.href.split('/').reverse();
+                var locale = lang[0];
+                var data   = [];
+
+                $.ajax({
+                    type: 'get',
+                    url: '<?php echo $this->url("weather/getall", ["locale" => $this->currentLocale()]) ?>',
+                    success: function(event, xhr, settings) {
+                        var template = String() + '<option value="qarshi" style="text-transform: uppercase;">Qarshi</option>';
+
+                        $.each(event.weather, function(key, value) {
+                            template += '<option value="' + key + '" style="text-transform: uppercase;">' + value.city.title + '</option>';
+                        });
+
+                        $('#weather').html(template);
+                    },
+                    error: function() {
+                        console.log("error");
+                    }
+                });
+
+                $('#weather').change(function() {
+                    var lang   = window.location.href.split('/').reverse();
+                    var locale = lang[0];
+                    var attr   = $('.weather');
+                    var $data  = {};
+                    var template = String();
+                    var city = '';
+
+                    if ($('#weather').val() == null) {
+                        city = 'qarshi';
+                    } else {
+                        city = $('#weather').val();
+                    }
+
+                    $.ajax({
+                        type: 'GET',
+                        url: '/weather/cities/' + city + '/<?php echo $this->currentLocale() ?>',
+                        //url: '<?php echo $this->url("weather/cities", ["city" => "", "locale" => $this->currentLocale()]); ?>',
+                        success: function(data) {
+                            var data = data.city, g = 0;
+
+                            if (data.air_t > 0) {
+                                g = '+ ' + data.air_t.toFixed();
+                            }
+
+                            template += '<h2 class="text-center">' + data.city.title + '</h2>' +
+                                        '<div>' +
+                                            '<div class="pull-right">' +
+                                                '<span style="font-size: 50px;">' + g + ' °C</span>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<img src="http://meteo.uz/img/weather-icons/wi_' + 
+                                                    data.weather_code + 
+                                                    '_' + 
+                                                    data.time_of_day + 
+                                                    '.png" class="img-responsive">' +
+                                            '</div>' +
+                                            '<div><strong>Oxirgi yangilanish:</strong><br> ' + data.datetime + '</div>'+
+                                        '</div>';
+
+                            attr.html(template);
+                        },
+                        error: function() {
+                            console.log("error");
+                        }
+                    });
+                });
+            });
+
+            $('.owl-carousel').owlCarousel({
+                loop:true,
+                responsiveClass:true,
+                margin:10
+            });
+
+            if (! $('#myCanvas').tagcanvas(
+                {
+                    textColour: '#000000',
+                    outlineColour: '#009688',
+                    reverse: true,
+                    depth: 1,
+                    maxSpeed: 0.03
+                },
+                'tags'
+            )) {
+                $('#myCanvasContainer').hide();
+            }
+        })(window, document, jQuery);
+    </script>
+    <script>
+        function initMap() {
+            var kashstat = {lat: 38.840586, lng: 65.792554};
+            var map = new google.maps.Map(document.getElementById('google-map'), {
+                zoom: 17,
+                center: kashstat
+            });
+            var marker = new google.maps.Marker({
+                position: kashstat,
+                map: map
+            });
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCswBR5b84uT_RepZgPQ4IR8cc0T77MvBc&callback=initMap">
+    </script>
+
+<script>
+var __REPLAIN_ = '0bdb5ed9-fadb-4ecc-ad9a-ff7402f5d969';
+(function(u){var s=document.createElement('script');s.type='text/javascript';s.async=true;s.src=u;
+var x=document.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);
+})('https://widget.replain.cc/dist/client.js');
+</script>
+</body>
+</html>

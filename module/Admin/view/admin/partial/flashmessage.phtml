@@ -1,0 +1,47 @@
+<?php  
+    use Zend\Mvc\Controller\Plugin\FlashMessenger as FM;
+    
+    $messages = array(
+        'info'      => $this->flashMessenger(FM::NAMESPACE_INFO),
+        'error'     => $this->flashMessenger(FM::NAMESPACE_ERROR),
+        'success'   => $this->flashMessenger(FM::NAMESPACE_SUCCESS),
+        'warning'   => $this->flashMessenger(FM::NAMESPACE_WARNING),
+    );
+
+    foreach($messages as $state => $strings) {
+        foreach($strings as $key => $message) {
+            $messages[$state][$key] = $this->translate($message);
+        }
+    }
+
+    $messages['warning'] = array_merge(
+        $messages['warning'],
+        $this->flashMessenger(FM::NAMESPACE_DEFAULT)
+    );
+?>
+
+<script>
+    $(window).load(function(){
+        toastr.options = {
+            "closeButton"    : true,
+            "debug"          : false,
+            "progressBar"    : true,
+            "positionClass"  : "toast-top-right",
+            "onclick"        : null,
+            "showDuration"   : "400",
+            "hideDuration"   : "1000",
+            "timeOut"        : "7000",
+            "extendedTimeOut": "1000",
+            "showEasing"     : "swing",
+            "hideEasing"     : "linear",
+            "showMethod"     : "fadeIn",
+            "hideMethod"     : "fadeOut"
+        };
+
+        <?php foreach ($messages as $key => $value): ?>
+            <?php if(count($value)): ?>
+                toastr.<?php echo $key ?>("<?php echo $this->escapeHtmlAttr(join("\n", $value)) ?>")
+            <?php endif; ?>
+        <?php endforeach ?>
+    });
+</script>

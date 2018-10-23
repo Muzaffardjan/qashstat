@@ -1,0 +1,38 @@
+<?php  
+use Zend\Navigation\Page\Mvc;
+
+foreach ($this->container as $page) :
+
+    if ($page instanceof Mvc) {
+        $params = $page->getParams();
+
+        if (!isset($params['locale']) || $params['locale']) {
+            $params['locale'] = $this->currentLocale();
+            $page->setParams($params);
+        }
+    }
+?>
+	<?php if ($page->hasPages() || $page->hasChildren()) : ?>
+		<li class="dropdown-submenu">
+			<span class="dropdown-submenu-child"><?php echo $page->getLabel(); ?></span>
+
+			<ul class="dropdown-menu">
+				<?php
+					echo $this->partial(
+						'application/front/partial/top-submenu',
+						array(
+							'container' => $page,
+							'tab' => $this->tab . "\n"
+						)
+					);
+				?>
+			</ul>
+		</li>
+	<?php else : ?>
+		<li class="dropdown-menu-item">
+			<a class="dropdown-menu-item-child" href="<?php echo $page->getHref(); ?>">
+				<?php echo $page->getLabel(); ?>
+			</a>
+		</li>
+	<?php endif; ?>
+<?php endforeach; ?>

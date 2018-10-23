@@ -1,0 +1,43 @@
+<?php if ($this->reports): ?>
+    <li>
+        <a href="<?php
+            echo $this->url(
+                'admin/typo-report', 
+                array(
+                    'locale' => $this->currentLocale()
+                )
+            );
+        ?>">
+            <div>
+                <i class="fa fa-strikethrough"></i>
+                <?php
+                    echo sprintf(
+                        $this->translate('Reported %s typos'),
+                        count($this->reports)
+                    );
+                ?>
+                <span class="pull-right text-muted small">
+                <?php
+                    echo date('d-m-Y', $this->reports[0]->reported_in);
+                ?>
+                </span>
+            </div>
+        </a>
+    </li>
+<?php else: ?>
+    <li>
+        <a href="<?php
+            echo $this->url(
+                'admin/typo-report', 
+                array(
+                    'locale' => $this->currentLocale()
+                )
+            );
+        ?>">
+            <div>
+                <i class="fa fa-strikethrough fa-fw"></i>
+                <?php echo sprintf($this->translate('Reported %s typos'), 0); ?>
+            </div>
+        </a>
+    </li>
+<?php endif ?>

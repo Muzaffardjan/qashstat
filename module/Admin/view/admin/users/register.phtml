@@ -1,0 +1,146 @@
+<?php $this->headTitle()->append('Register new user'); ?>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2><?php echo $this->translate('Register user') ?></h2>
+        <?php
+            $this->plugin('navigation')->setContainer($this->navigation('Zend\Navigation\Admin')->getContainer());
+
+            echo $this->navigation()
+				->breadcrumbs()
+				->setMinDepth(0)
+				->setMaxDepth(4)
+				->setPartial('partial/admin-breadcrumbs');
+        ?>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5><?php echo $this->translate('Register user') ?></h5>
+				</div>
+				<div class="ibox-content">
+					<?php  
+						$form = $this->form;
+
+						$form
+						->setAttribute('action', $this->url('admin/users', array('locale' => $this->currentLocale(), 'action' => 'register')))
+						->prepare();
+
+						$formLabel = $this->plugin('formLabel');
+
+						echo $this->form()->openTag($form);
+					?>
+						<?php if($this->errors): ?>
+							<div class="alert alert-danger">
+								<?php foreach($this->errors as $error): ?>
+									<b><?php echo $this->translate($error) ?></b>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+						<div class="form-group<?php if($form->get('login')->getMessages()) echo ' has-error' ?>">
+							<?php  
+								echo $formLabel->openTag();
+									echo $this->translate($form->get('login')->getOption('label'));
+									echo '<span style="color:red;">*</span>';
+								echo $formLabel->closeTag(); 
+							?>
+							<?php 
+								echo $this->formText
+								(
+									$form->get('login')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('login')) ?>
+						</div>
+						<div class="form-group<?php if($form->get('name')->getMessages()) echo ' has-error' ?>">
+							<?php  
+								echo $formLabel->openTag();
+									echo $this->translate($form->get('name')->getOption('label'));
+									echo '<span style="color:red;">*</span>';
+								echo $formLabel->closeTag(); 
+							?>
+							<?php 
+								echo $this->formText
+								(
+									$form->get('name')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('name')) ?>
+						</div>
+						<?php if($this->usersCount): ?>
+							<div class="form-group<?php if($form->get('roles')->getMessages()) echo ' has-error' ?>">
+								<?php  
+									echo $formLabel->openTag();
+										echo $this->translate($form->get('roles')->getOption('label'));
+										echo '<span style="color:red;">*</span>';
+									echo $formLabel->closeTag(); 
+								?>
+								<?php 
+									echo $this->formSelect
+									(
+										$form->get('roles')
+										->setAttribute('class', 'form-control')
+									) 
+								?>
+								<?php echo $this->formElementErrors($form->get('roles')) ?>
+							</div>
+						<?php endif; ?>
+						<div class="form-group<?php if($form->get('password')->getMessages()) echo ' has-error' ?>">
+							<?php  
+								echo $formLabel->openTag();
+									echo $this->translate($form->get('password')->getOption('label'));
+									echo '<span style="color:red;">*</span>';
+								echo $formLabel->closeTag(); 
+							?>
+							<?php 
+								echo $this->formPassword
+								(
+									$form->get('password')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('password')) ?>
+						</div>
+						<div class="form-group<?php if($form->get('password-check')->getMessages()) echo ' has-error' ?>">
+							<?php  
+								echo $formLabel->openTag();
+									echo $this->translate($form->get('password-check')->getOption('label'));
+									echo '<span style="color:red;">*</span>';
+								echo $formLabel->closeTag(); 
+							?>
+							<?php 
+								echo $this->formPassword
+								(
+									$form->get('password-check')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('password-check')) ?>
+						</div>
+						<div class="form-group<?php if($form->get('description')->getMessages()) echo ' has-error' ?>">
+							<?php echo $this->formLabel($form->get('description')) ?>
+							<?php 
+								echo $this->formTextarea
+								(
+									$form->get('description')
+									->setAttribute('class', 'form-control')
+								) 
+							?>
+							<?php echo $this->formElementErrors($form->get('description')) ?>
+						</div>
+						<button type="submit" class="btn btn-success">
+							<span><?php echo $this->translate('Save') ?></span>
+						</button>
+						<a href="<?php echo $this->url('admin/users', array('locale' => $this->currentLocale())) ?>" class="btn btn-warning">
+							<span><?php echo $this->translate('Cancel') ?></span>
+						</a>
+					<?php echo $this->form()->closeTag() ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

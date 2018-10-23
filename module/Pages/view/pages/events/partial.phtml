@@ -1,0 +1,54 @@
+<?php if ($events = $this->pages()->getEvents()->next(5)->getCurrentSet()) : ?>
+<div class="events" style="margin-bottom: 10px;">
+    <div class="left-side-title">
+        Choraklik hisobotlar muddati
+    </div>
+
+    <?php foreach ($events as $event) : ?>
+    <div class="events-item">
+        <!-- li class="events-date">
+            <span class="day">
+                <?php
+                    echo $this->dateFormat(
+                        (int) $event->happens,
+                        IntlDateFormatter::MEDIUM, // date
+                        IntlDateFormatter::SHORT, // time
+                        $this->currentLocale() != 'uz-UZ' ? $this->currentLocale() : 'uz-Latn-UZ'
+                    );
+                ?>
+            </span>
+        </li -->
+
+        <li class="events-date">
+            <span class="day"><?php echo date('d', $event->happens); ?></span>
+            <span class="month"><?php echo date('M', $event->happens); ?></span>
+            <span class="year"><?php echo date('Y', $event->happens); ?></span>
+        </li>
+
+        <li class="events-title">
+            <a href="
+                <?php
+                    echo $this->url(
+                        'events/view',
+                        [
+                            'locale' => $this->currentLocale(),
+                            'page'   => $event->url
+                        ]
+                    );
+                ?>
+            ">
+                <?php echo $event->title; ?>
+            </a>
+            <br>
+
+            <span>(Hisobot davridan keyingi oyning <?php echo date('j', $event->happens) ?>-sanasidan kechiktirmay)</span>
+        </li>
+    </div>
+    <?php endforeach; ?>
+</div>
+<?php else: ?>
+    <div class="alert alert-info text-center">
+        <h3><i class="rt-icon-pencil2"></i></h3>
+        <h4><?php echo $this->translate('Events will be added soon') ?></h4>
+    </div>
+<?php endif ?>

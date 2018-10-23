@@ -1,0 +1,26 @@
+<?php
+	return array(
+		"RSS feed of %s" => "RSS рассылка %s",
+		"Search" => "Поиск",
+		"Sort by" => "Сортировать по",
+		"Relevance" => "Релевантности",
+		"Type" => "Тип",
+		"All" => "Все",
+		"Blog" => "Блог",
+		"Home" => "Домашняя страница",
+		"January,February,March,April,May,June,July,August,September,October,November,December" => "Январь,Февраль,Март,Апрель,Май,Июнь,Июль,Август,Сентябрь,Октябрь,Ноябрь,Декабрь",
+		"In" => "В",
+		"Information will be added soon" => "Информация будет добавлена в ближайшее время",
+		"Categories" => "Категории",
+		"Archive" => "Архив",
+		"Quiz" => "Викторина",
+		"Mo,Tu,We,Th,Fr,Sa,Su" => "По,Вт,Ср,Чт,Пн,Су,Вс",
+		"Events" => "События",
+		"Happened" => "Проводилась",
+		"Happens" => "Проводится",
+		"Related" => "Похожие",
+		"Search" => "Поиск",
+		"Filters" => "Фильтры",
+		"Nothing found" => "Ничего не найдено",	
+	);
+?>

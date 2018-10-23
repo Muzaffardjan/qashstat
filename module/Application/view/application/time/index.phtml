@@ -1,0 +1,48 @@
+<?php
+    echo $this->headLink()
+        ->appendStylesheet($this->basePath('css/mk-time.css'));
+    echo $this->headStyle()
+        ->appendStyle("
+            #mk {
+                padding: 10px 0;
+            }
+        ");
+?>
+
+<div class="container-fluid" id="mk">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="hero-circle">
+                <div class="hero-face">
+                    <div id="mk-hour" class="hero-hour"></div>
+                    <div id="mk-minute" class="hero-minute"></div>
+                    <div id="mk-second" class="hero-second"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mk-calendar">
+                <div class="mk---controls">
+                    <div class="mk--controls-button pull-right">
+                        <i class="glyphicon glyphicon-circle-arrow-right" id="mk--controls-right"></i>
+                    </div>
+
+                    <div class="mk--controls-button">
+                        <i class="glyphicon glyphicon-circle-arrow-left" id="mk--controls-left"></i>
+                    </div>
+
+                    <div class="mk--controls-button text-center">
+                        asd
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+    echo $this->inlineScript()
+        ->appendFile($this->basePath('js/moment-with-locales.js'))
+        ->appendFile($this->basePath('js/mk-time.js'));
+?>
